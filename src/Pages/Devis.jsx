@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SettingOutlined, LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload } from 'antd';
+import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -11,11 +11,12 @@ import PizZip from 'pizzip';
 import PizZipUtils from 'pizzip/utils/index.js';
 import { saveAs } from 'file-saver';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import 'dayjs/locale/fr';
 import locale from 'antd/es/date-picker/locale/fr_FR';
+import axios from 'axios';
 
 
 
@@ -39,13 +40,20 @@ const Devis = () => {
 
     const [file, setFile] = useState(null);
     const [fileName, setFileName] = useState('');
+    const [imageDataUrl, setImageDataUrl] = useState(null);
 
-    const handleFileUpload = (file) => {
+    const handleFileUpload = async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await axios.post("https://api.boring-hermann.212-227-197-242.plesk.page/api/upload", formData);
+        setFileName(res.data);
         const reader = new FileReader();
         reader.onloadend = () => {
             const image = new Image();
             image.src = reader.result;
             image.onload = () => {
+                const dataUrl = reader.result;
+                setImageDataUrl(dataUrl)
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 const aspectRatio = image.width / image.height;
@@ -57,12 +65,21 @@ const Devis = () => {
                 const resizedDataURL = canvas.toDataURL('image/jpeg');
                 setFile(resizedDataURL);
                 setFormValue({ ...formValue, image: resizedDataURL });
-                setFileName(file.name); // Ajout du nom du fichier
+                // setFileName(file.name); // Ajout du nom du fichier
             };
         };
         reader.readAsDataURL(file);
     };
 
+    const handleFileUploads = (file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUrl = reader.result;
+          // Use the dataUrl as needed (e.g., set state)
+          setImageDataUrl(dataUrl)
+        };
+        reader.readAsDataURL(file);
+      };
 
     const navigate = useNavigate()
     useEffect(() => {
@@ -71,9 +88,6 @@ const Devis = () => {
         }
     })
 
-
-
-
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -81,7 +95,9 @@ const Devis = () => {
     const [color, setColor] = useState(ColorList[0]);
     const [gap, setGap] = useState(GapList[0]);
     const [prestations, setPrestations] = useState([])
+    const [notats, setNotats] = useState([])
     const [prestationsList, setPrestationsList] = useState([])
+    const [notatsList, setNotatsList] = useState([])
     const [current, setCurrent] = useState(0);
     const changeUser = () => {
         const index = UserList.indexOf(user);
@@ -98,7 +114,6 @@ const Devis = () => {
             Cookies.remove('tel')
             Cookies.remove('email')
             navigate('/')
-            console.log('Déconnexion');
         }
     };
 
@@ -120,6 +135,7 @@ const Devis = () => {
     };
     const [formValue, setFormValue] = useState({
         date: '',
+        titre_d:'',
         référence: '',
         nomi: Cookies.get("nom") || '',
         prénomi: Cookies.get("prenom") || '',
@@ -133,6 +149,19 @@ const Devis = () => {
         tel: '',
         mail: '',
         adressef: '',
+        image: '',
+        titre: '',
+        reference: '',
+        titre_n:'',
+        texte_n:'',
+        id_d: '',
+        id_p: '',
+
+        nom_inter: Cookies.get("nom") || '',
+        prenom_inter: Cookies.get("prenom") || '',
+        mail_inter: Cookies.get("email") || '',
+        tel_inter: Cookies.get("tel") || '',
+
 
     });
 
@@ -143,14 +172,109 @@ const Devis = () => {
         setCurrentStep(currentStep + 1);
     };
 
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const iddevis = queryParams.get('id');
 
     useEffect(() => {
-        console.log(formValue);
-    }, [formValue])
 
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/all/' + iddevis, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                setFormValue({
+                    ...formValue,
+                    date: data[0].date,
+                    référence: data[0].reference,
+                    titre_d: data[0].titre_d,
+
+                    nomi: data[0].nom,
+                    prénomi: data[0].prenom,
+                    teli: data[0].tel_c,
+                    maili: data[0].mail_c,
+
+
+                    adressef: data[0].adressef,
+                    mail: data[0].mail_c,
+                    tel: data[0].tel_c,
+                    adresse: data[0].adresse,
+                    mission: data[0].mission,
+                    nom_c: data[0].nom_client,
+                    prenom: data[0].prenom_c,
+                    nom: data[0].nom_c,
+                    image: data[0].image,
+
+                    titre: data[0].titre,
+                    prix: data[0].prix,
+                    tva: data[0].tva,
+                    texte: data[0].texte,
+                    idp: data[0].id_p,
+                });
+
+
+
+
+            })
+            .catch(error => {
+                console.error(error);
+                // Gestion des erreurs
+            });
+    }, []);
+
+
+    function updateDevisWithClient() {
+        const imgUrl = (!file || file === "") ? "" : fileName;
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/update/all/' + iddevis, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                texte: formValue.texte,
+                prix: formValue.prix,
+                tva: formValue.tva,
+                titre: formValue.titre,
+
+                date: formValue.date,
+                titre_d:formValue.titre_d,
+                reference: formValue.référence,
+
+                nom_c: formValue.nom_c,
+                adresse: formValue.adresse,
+                tel: formValue.tel,
+                mail: formValue.mail,
+                adressef: formValue.adressef,
+                mission: formValue.mission,
+                nom: formValue.nom,
+                prenom: formValue.prenom,
+                image: imgUrl,
+
+                nomi: formValue.nomi,
+                prenomi: formValue.prénomi,
+                emaili: formValue.maili,
+                teli: formValue.teli
+            }),
+        })
+            .then(response => response.json())
+            .then((data) => {
+                updatedevisWithPrestation();
+                Modal.info({
+                    title: '',
+                    content: (
+                        <div>
+                            <p>Vous avez bien modifié le devis</p>
+                        </div>
+                    ),
+
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    }
 
     const generateDevis = () => {
-
         const imageOptions = {
             centered: false,
             getImage(url) {
@@ -180,10 +304,6 @@ const Devis = () => {
                             url,
                             tagName
                         );
-                        alert(
-                            "An error occured while loading " +
-                            url
-                        );
                         reject(e);
                     };
                 });
@@ -197,8 +317,8 @@ const Devis = () => {
                     console.error(error);
                     return;
                 }
-
                 const zip = new PizZip(content);
+                // return 0;
                 const doc = new Docxtemplater(zip, {
                     modules: [new ImageModule(imageOptions)],
                 });
@@ -230,18 +350,32 @@ const Devis = () => {
             })
             .catch(error => console.error(error));
     }
-
-
+    const getNotats = () => {
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats')
+            .then(response => response.json())
+            .then(data => {
+                const formattedData = data.map(item => {
+                    return {
+                        value: item.id_n,
+                        label: item.titre_n,
+                    };
+                });
+                setNotats(formattedData);
+                setNotatsList(data)
+            })
+            .catch(error => console.error(error));
+    }
 
     const onSelect = (e) => {
-
+        localStorage.setItem('selectedPresId', e);
         const element = prestationsList.find(item => item.id_p === e);
-
-        setFormValue({ ...formValue, titre: element.titre, text: element.texte, prix: element.pris, tva: element.tva, });
-
+        setFormValue({ ...formValue, titre: element.titre, texte: element.texte, prix: element.prix, tva: element.tva, });
     }
 
     const addClient = () => {
+        let idUser = localStorage.getItem('idUser');
+
+        let selectedPresId = localStorage.getItem('selectedPresId');
         fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/client/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -254,28 +388,220 @@ const Devis = () => {
                 mail: formValue.mail,
                 adressef: formValue.adressef,
                 mission: formValue.mission,
-
+                image: fileName,
             }),
         })
             .then(response => response.json())
-           
+            .then(data => {
+                const client = data.client;
+                localStorage.setItem('idClient', client.id_c);
+
+                addDevis(client.id_c);
+            })
             .catch(error => {
                 console.error(error);
-                // Gestion des erreurs
+
             });
     };
 
+    const devisWithPrestation = () => {
+
+        let arrayAux = [];
+        selectPrestationsOption.forEach(element => {
+            arrayAux.push(element);
+        });
+        arrayAux.forEach(element => {
+            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithPrestation/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_d: localStorage.getItem('idDevis'),
+                    id_p: element,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                })
+                .catch(error => {
+                    console.error(error);
+
+                });
+        });
+
+
+
+    };
+    const devisWithNotats = () => {
+
+        let arrayAux = [];
+        selectNotatsOption.forEach(element => {
+            arrayAux.push(element);
+        });
+        arrayAux.forEach(element => {
+            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithNotats/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_d: localStorage.getItem('idDevis'),
+                    id_n: element,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                })
+                .catch(error => {
+                    console.error(error);
+
+                });
+        });
+
+
+
+    };
+    const updatedevisWithPrestation = () => {
+        let arrayAux = [];
+        selectPrestationsOption.forEach(element => {
+            arrayAux.push(element);
+        });
+        arrayAux.forEach(element => {
+            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithPrestation/update/' + iddevis, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+        
+                    id_d: localStorage.getItem('idDevis'),
+                    id_p: element,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                })
+                .catch(error => {
+                    console.error(error);
+
+                });
+        });
+    };
+    function addDevis(idClient) {
+        let idUser = localStorage.getItem('idUser');
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                reference: formValue.référence,
+                date: formValue.date,
+                titre_d: formValue.titre_d,
+                nom_inter: formValue.nom_inter,
+                prenom_inter: formValue.prenom_inter,
+                tel_inter: formValue.tel_inter,
+                mail_inter: formValue.mail_inter,
+                id_u: Cookies.get("id"),
+                id_c: idClient,
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                const devis = data.devis;
+                localStorage.setItem('idDevis', devis.id_c);
+                devisWithPrestation();
+                devisWithNotats();
+
+            })
+            .catch(error => {
+                console.error(error);
+
+            });
+    }
     useEffect(() => {
         getPrestation()
+        getNotats()
     }, [])
 
+    useEffect(() => {
+        getSelectedrestationByDevis();
+        getSelectednotatsByDevis();
+    }, [])
+
+    useEffect(()=>{
+        console.log(formValue)
+    },[formValue])
+
+
+    function getSelectedrestationByDevis() {
+        let idDevis = localStorage.getItem('idDevis');
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithPrestation/' + idDevis, {
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(response => response.json())
+            .then(data => {
+                let x = []
+                data.forEach(d => {
+                    x.push(d.id_p)
+                });
+                setSelectPrestationsOption(x)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    function getSelectednotatsByDevis() {
+        let idDevis = localStorage.getItem('idDevis');
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithNotats/' + idDevis, {
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(response => response.json())
+            .then(data => {
+                let x = []
+                data.forEach(d => {
+                    x.push(d.id_n)
+                });
+                setSelectNotatsOption(x)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    const options = [];
+    for (let i = 10; i < 36; i++) {
+        options.push({
+            label: i.toString(36) + i,
+            value: i.toString(36) + i,
+        });
+    }
+    const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
+    
+    const handleChange = (value) => {
+        let arrayAux = [];
+        value.forEach((element, index) => {
+            arrayAux.push(element);
+        });
+
+        setSelectPrestationsOption(arrayAux);
+
+    };
+    const [selectNotatsOption, setSelectNotatsOption] = useState([]);
+    const handleChangenotats = (value) => {
+        let arrayAux = [];
+        value.forEach((element, index) => {
+            arrayAux.push(element);
+        });
+
+        setSelectNotatsOption(arrayAux);
+
+    };
+
+    useEffect(() => {
+        console.log('setSelectPrestationsOption', selectPrestationsOption);
+    }, [selectPrestationsOption],[selectNotatsOption])
 
     return (
-
-
         <Layout>
             <Sidebar />
-
             <Layout className="site-layout " style={{ backgroundColor: '#001529' }}>
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
@@ -284,7 +610,6 @@ const Devis = () => {
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>
                         <p style={{ color: '#ffff' }}>{Cookies.get('nom') + ' ' + Cookies.get('prenom')}</p>
-
                         <Dropdown overlay={menu} placement="bottomRight">
                             <Avatar
                                 style={{
@@ -295,13 +620,10 @@ const Devis = () => {
                                 gap={gap}
                                 icon={<UserOutlined />}
                             >
-
-                            </Avatar>
-
+                           </Avatar>
                         </Dropdown>
                     </div>
                 </Header>
-
                 <Content
                     className='mb-4'
                     style={{
@@ -312,8 +634,6 @@ const Devis = () => {
                         background: '#fff',
                     }}
                 >
-
-
                     <Steps
                         className='mt-4'
                         current={currentStep}
@@ -333,15 +653,14 @@ const Devis = () => {
                                 title: 'Prestation',
                             },
                             {
+                                title: 'Notats',
+                            },
+                            {
                                 title: 'Telecharger fichier Word',
                             },
                         ]}
                     />
-
                     <hr className='mt-5'></hr>
-
-
-
                     {currentStep === 0 &&
                         <>
                             <Row className='mt-5'>
@@ -360,9 +679,18 @@ const Devis = () => {
 
                                     <MDBValidationItem feedback='Merci de remplire la date.' invalid>
                                         <Col xl={6}> <label>Date de devis</label> </Col>
-
-                                        <DatePicker format="DD-MM-YYYY" locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format('DD-MM-YYYY') }) }} />
-
+                                        <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format() }) }} />
+                                    </MDBValidationItem>
+                                    <MDBValidationItem className='col-md-6' feedback="Merci de remplire le nom de l'nterlocuteur ." invalid>
+                                        <label>Titre de Devis :</label>
+                                        <MDBInput
+                                            className='mt-2'
+                                            value={formValue.titre_d}
+                                            name='titre_d'
+                                            onChange={onChange}
+                                            id='validationCustom02'
+                                            required
+                                        />
                                     </MDBValidationItem>
                                     <MDBValidationItem feedback='Merci de remplire La référence Devis.' invalid>
 
@@ -372,7 +700,7 @@ const Devis = () => {
                                                 value={formValue.référence}
                                                 name='référence'
                                                 onChange={onChange}
-                                                id='validationCustom02'
+                                                id='validationCustom03'
                                                 required
 
                                             /></Col>
@@ -383,14 +711,7 @@ const Devis = () => {
                                     </div>
                                 </MDBValidation>
                             </Row>
-
-
-
-
-
                         </>}
-
-
                     {currentStep === 1 &&
                         <>
                             <Row className='mt-5'>
@@ -411,8 +732,8 @@ const Devis = () => {
                                         <label>Nom :</label>
                                         <MDBInput
                                             className='mt-2'
-                                            value={formValue.nomi}
-                                            name='nomi'
+                                            value={formValue.nom_inter}
+                                            name='nom_inter'
                                             onChange={onChange}
                                             id='validationCustom03'
                                             required
@@ -422,8 +743,8 @@ const Devis = () => {
                                         <label>Prénom:</label>
                                         <MDBInput
                                             className='mt-2'
-                                            value={formValue.prénomi}
-                                            name='prénomi'
+                                            value={formValue.prenom_inter}
+                                            name='prenom_inter'
                                             onChange={onChange}
                                             id='validationCustom04'
                                             required
@@ -434,8 +755,8 @@ const Devis = () => {
                                         <label>Téléphone</label>
                                         <MDBInput
                                             className='mt-2'
-                                            value={formValue.teli}
-                                            name='teli'
+                                            value={formValue.tel_inter}
+                                            name='tel_inter'
                                             onChange={onChange}
                                             id='validationCustom05'
                                             required
@@ -448,8 +769,8 @@ const Devis = () => {
                                         <label>Mail</label>
                                         <MDBInput
                                             className='mt-2'
-                                            value={formValue.maili}
-                                            name='maili'
+                                            value={formValue.mail_inter}
+                                            name='mail_inter'
                                             onChange={onChange}
                                             id='validationCustom06'
                                             required
@@ -467,8 +788,6 @@ const Devis = () => {
                             </Row>
 
                         </>}
-
-
                     {currentStep === 2 &&
                         <>
                             <Row className='mt-5'>
@@ -484,9 +803,6 @@ const Devis = () => {
                                         next()
                                     }
                                 }} className='row g-3'>
-
-
-
                                     <MDBValidationItem className='col-md-6' feedback='Merci de remplire Le nom.' invalid>
                                         <MDBInput
                                             value={formValue.nom}
@@ -568,7 +884,6 @@ const Devis = () => {
                                             label='Adresse(Facturation)'
                                         />
                                     </MDBValidationItem>
-
                                     <MDBValidationItem className='col-md-6' feedback="Merci de remplire L'adresse (Facturation)." invalid>
                                         <div>
                                             <div className='d-flex gap-3 align-items-baseline'>
@@ -582,31 +897,20 @@ const Devis = () => {
                                                 </Upload>
                                             </div>
                                             <p style={{ color: 'red' }}>{fileName}</p>
-
-
                                         </div>
-
+                                        <div>
+                                            <img src={imageDataUrl ? imageDataUrl : `/upload/${formValue?.image}`} alt='' />
+                                        </div>
                                     </MDBValidationItem>
-
-
-
                                     <div className='mt-5 d-flex gap-2'>
                                         <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
 
                                         <Button type='submit'>Suivant</Button>
                                     </div>
-
-
                                 </MDBValidation>
                             </Row>
-
                         </>
                     }
-
-
-
-
-
                     {currentStep === 3 &&
                         <>
                             <Row className='mt-5'>
@@ -626,9 +930,10 @@ const Devis = () => {
 
                                     <MDBValidationItem className='col-md-6' feedback='Merci de remplire La Mission.' invalid>
                                         <Select
-                                            defaultValue="Prestation"
+                                            mode="multiple"
+                                            value={selectPrestationsOption}
                                             style={{ width: 200 }}
-                                            onSelect={onSelect}
+                                            onChange={handleChange}
                                             options={prestations}
                                         />
                                     </MDBValidationItem>
@@ -651,8 +956,8 @@ const Devis = () => {
                         <>
                             <Row className='mt-5'>
                                 <div className='d-flex align-items-center gap-4'>
-                                    <FormOutlined className='fs-1' />
-                                    <h4>Télécharger fichier word</h4>
+                                    <BarChartOutlined className='fs-1' />
+                                    <h4>Notats</h4>
                                 </div>
                             </Row>
                             <Row>
@@ -664,38 +969,68 @@ const Devis = () => {
                                 }} className='row g-3'>
 
 
-
-
-
-
-
-
+                                    <MDBValidationItem className='col-md-6' feedback='Merci de remplire La Notats.' invalid>
+                                        <Select
+                                            mode="multiple"
+                                            value={selectNotatsOption}
+                                            style={{ width: 200 }}
+                                            onChange={handleChangenotats}
+                                            options={notats}
+                                        />
+                                    </MDBValidationItem>
 
 
                                     <div className='d-flex gap-2'>
                                         <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
 
-                                        <div className='col-12'>
-                                            <Button onClick={() => { generateDevis(); addClient(); }}> <UploadOutlined className='me-2' /> Cliquez pour télécharger</Button>
-
-                                        </div>
+                                        <Button type='submit'>Suivant</Button>
                                     </div>
 
                                 </MDBValidation>
                             </Row>
 
                         </>
-
                     }
 
 
+                    {currentStep === 5 &&
+                        <>
+                            <Row className='mt-5'>
+                                <div className='d-flex align-items-center gap-4'>
+                                    <FormOutlined className='fs-1' />
+                                    <h4>Télécharger fichier word</h4>
+                                </div>
+                            </Row>
+                            <Row>
+                                <MDBValidation onSubmit={(e) => {
+                                    let form = document.querySelector('.needs-validation')
+                                    if (form.checkValidity()) {
+                                        next()
+                                    }
+                                }} className='row g-3'>
+                                    <div className='d-flex gap-2'>
+                                        <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
 
+                                        {iddevis == null && (
+                                            <div className='col-12'>
+                                                <Button onClick={() => { addClient(); generateDevis(); }}> <UploadOutlined className='me-2' /> Cliquez pour télécharger</Button>
 
+                                            </div>
+                                        )}
+                                        {iddevis != null && (
+                                            <div className='col-12'>
+                                                <Button onClick={() => {
+                                                    generateDevis(); updateDevisWithClient();
+                                                }} type='submit'>Modifier</Button>
 
-
-
+                                            </div>
+                                        )}
+                                    </div>
+                                </MDBValidation>
+                            </Row>
+                        </>
+                    }
                 </Content>
-
             </Layout>
         </Layout >
 

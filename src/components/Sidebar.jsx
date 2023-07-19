@@ -62,10 +62,11 @@ const Sidebar = () => {
     }
 
     const items = [
-        getItem('Crée un devis', '/', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/devis') }),
-        getItem('Crée une prestation', '/', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/prestation') }),
+      
+       
         getItem('Les devis', '/', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/ldevis') }),
         getItem('Les prestations', '/', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/lprestations') }),
+        getItem('Les notats', '/', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/lnotats') }),
 
         getItem('Configuration du compte', '/settings', 'my-3', <SettingOutlined className='fs-5 pe-2' />, () => { navigate('/settings') }),
 

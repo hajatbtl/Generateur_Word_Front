@@ -61,11 +61,23 @@ const Login = () => {
                         Cookies.set('id', token.id, { expires: 3 })
                         Cookies.set('tel', token.tel, { expires: 3 })
                         Cookies.set('email', token.email, { expires: 3 })
+
+                        localStorage.setItem('token', data.accessToken)
+                        localStorage.setItem('nom', token.nom)
+                        localStorage.setItem('prenom', token.prenom)
+                        localStorage.setItem('idUser', token.id)
+                        localStorage.setItem('tel', token.tel)
+                        localStorage.setItem('email', token.email)
+
+
+                        console.log('idUser' , localStorage.getItem('idUser'));
+
+
                         navigate('/devis')
                     } else {
                         Modal.error({
                             title: 'votre mail ou mot de passe incorect',
-                          
+
                         });
                     }
 

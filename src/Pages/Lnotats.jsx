@@ -14,7 +14,7 @@ const { Header } = Layout;
 const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 const GapList = [4, 3, 2, 1];
 
-const Lprestations = () => {
+const Lnotats = () => {
     const [data, setData] = useState([]);
 
     const {
@@ -32,18 +32,16 @@ const Lprestations = () => {
 
     const [formValue, setFormValue] = useState({
         texte: '',
-        prix: '',
-        tva: '',
         titre: '',
     });
     const navigate = useNavigate();
 
     const handleModifierClick = (id) => {
         // Perform any necessary logic before navigating
-        // Navigate to the "Prestation" page with pre-filled fields
+        // Navigate to the "Notats" page with pre-filled fields
 
 
-        navigate(`/prestation/?id=${id}`);
+        navigate(`/notats/?id=${id}`);
     };
 
 
@@ -60,8 +58,8 @@ const Lprestations = () => {
         </Menu>
     );
 
-    const getPrestation = () => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation')
+    const getNotats = () => {
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats')
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -69,36 +67,27 @@ const Lprestations = () => {
             .catch(error => console.error(error));
     }
     useEffect(() => {
-        getPrestation()
+        getNotats()
 
     }, [])
 
     const columns1 = [
         {
             title: 'id',
-            dataIndex: 'id_p',
-            key: 'id_p',
-        },
-        {
-            title: 'Texte',
-            dataIndex: 'texte',
-            key: 'texte',
-        },
-        {
-            title: 'Prix',
-            dataIndex: 'prix',
-            key: 'prix',
-        },
-        {
-            title: 'TVA',
-            dataIndex: 'tva',
-            key: 'tva',
+            dataIndex: 'id_n',
+            key: 'id_n',
         },
         {
             title: 'Titre',
-            dataIndex: 'titre',
-            key: 'titre',
+            dataIndex: 'titre_n',
+            key: 'titre_n',
         },
+        {
+            title: 'Texte',
+            dataIndex: 'texte_n',
+            key: 'texte_n',
+        },
+       
         {
             title: 'Action',
 
@@ -106,21 +95,21 @@ const Lprestations = () => {
                 <Space size="middle">
                     <Button size="sm" variant="danger" onClick={() => {
 
-                        let id = record.id_p;
+                        let id = record.id_n;
 
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/delete/' + id, {
+            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/delete/' + id, {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' }
                         })
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data)
-                                getPrestation()
+                                getNotats()
                             });
 
                     }}>
                         <DeleteOutlined className='fs-5 m-1' ></DeleteOutlined></Button>
-                    <Button size="sm" className="bg-success " onClick={() => handleModifierClick(record.id_p)}>
+                    <Button size="sm" className="bg-success " onClick={() => handleModifierClick(record.id_n)}>
                         < EditOutlined className='fs-5 m-1' ></EditOutlined>
                     </Button>
                 </Space>
@@ -136,7 +125,7 @@ const Lprestations = () => {
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
                         <SettingOutlined className='fs-3 pe-4' />
-                        Les préstations
+                        Les notats
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>
                         <p style={{ color: '#ffff' }}>{Cookies.get('nom') + ' ' + Cookies.get('prenom')}</p>
@@ -172,8 +161,8 @@ const Lprestations = () => {
                 ><Row>
                         <div className='d-flex justify-content-between align-items-center'>
                             <div >
-                                <Link to="/prestation">
-                                    <Button><PlusOutlined />Nouveau préstation</Button>
+                                <Link to="/notats">
+                                    <Button><PlusOutlined />Nouveau notats</Button>
                                 </Link>
                             </div>
 
@@ -190,7 +179,7 @@ const Lprestations = () => {
                     </Row>
 
                     <Row className='justify-content-center align-items-center'>
-                        <Table  scroll={{ x: '100%' }} className='mt-5' columns={columns1} dataSource={data} />
+                        <Table scroll={{ x: '100%' }}  className='mt-5' columns={columns1} dataSource={data} />
                     </Row>
                 </Content>
 
@@ -199,4 +188,4 @@ const Lprestations = () => {
 
     );
 };
-export default Lprestations;
+export default Lnotats;

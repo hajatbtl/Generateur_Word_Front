@@ -25,16 +25,16 @@ const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 const GapList = [4, 3, 2, 1];
 
 
-const Prestation = () => {
+const Notats = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const idPres = queryParams.get('id');
+    const idNot = queryParams.get('id');
 
 
     const { TextArea } = Input;
 
     useEffect(() => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/' + idPres, {
+        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/' + idNot, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -43,13 +43,13 @@ const Prestation = () => {
                 console.log("aaaaaaaaa : ", data[0]);
 
 
-                setFormValue({ ...formValue, titre: data[0].titre, texte: data[0].texte, prix: data[0].prix, tva: data[0].tva, });
+                setFormValue({ ...formValue, titre_n: data[0].titre_n, texte_n: data[0].texte_n });
 
 
                 const formattedData = data.map(item => {
                     return {
-                        value: item.id_p,
-                        label: item.titre,
+                        value: item.id_n,
+                        label: item.titre_n,
                     };
                 });
             })
@@ -73,22 +73,18 @@ const Prestation = () => {
     };
 
     const [formValue, setFormValue] = useState({
-        texte: '',
-        prix: '',
-        tva: '',
-        titre: '',
+        texte_n: '',
+        titre_n: '',
     });
-    const addPrestation = () => {
-        if (formValue.texte && formValue.prix && formValue.tva && formValue.titre) {
+    const addNotats = () => {
+        if (formValue.texte_n && formValue.titre_n) {
             // Tous les champs sont remplis
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/add', {
+            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    texte: formValue.texte,
-                    prix: formValue.prix,
-                    tva: formValue.tva,
-                    titre: formValue.titre,
+                    texte_n: formValue.texte_n,
+                    titre_n: formValue.titre_n,
                 }),
             })
                 .then(response => response.json())
@@ -97,19 +93,17 @@ const Prestation = () => {
                         title: '',
                         content: (
                             <div>
-                                <p>Vous avez bien ajouté la prestation</p>
+                                <p>Vous avez bien ajouté la notats</p>
                             </div>
                         ),
                         onOk() {
                             setFormValue({
-                                texte: '',
-                                prix: '',
-                                tva: '',
-                                titre: '',
+                                texte_n: '',
+                                titre_n: '',
                             });
                         }
                     });
-                    navigate('/lprestations');
+                    navigate('/lnotats');
                 })
                 .catch(error => {
                     console.error(error);
@@ -142,18 +136,16 @@ const Prestation = () => {
 
     const navigate = useNavigate()
 
-    function updatePrestation() {
-        if (formValue.texte && formValue.prix && formValue.tva && formValue.titre) {
+    function updateNotats() {
+        if (formValue.texte_n && formValue.titre_n) {
             // Tous les champs sont remplis
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/update/' + idPres, {
+            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/update/' + idNot, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
 
-                    texte: formValue.texte,
-                    prix: formValue.prix,
-                    tva: formValue.tva,
-                    titre: formValue.titre,
+                    texte_n: formValue.texte_n,
+                    titre_n: formValue.titre_n,
                 }),
             })
                 .then(response => response.json())
@@ -162,20 +154,18 @@ const Prestation = () => {
                         title: '',
                         content: (
                             <div>
-                                <p>Vous avez bien modifié la prestation</p>
+                                <p>Vous avez bien modifié la notats</p>
                             </div>
                         ),
                         onOk() {
                             setFormValue({
-                                texte: '',
-                                prix: '',
-                                tva: '',
-                                titre: '',
+                                texte_n: '',
+                                titre_n: '',
                             });
                         }
 
                     });
-                    navigate('/lprestations');
+                    navigate('/lnotats');
                 })
                 .catch(error => {
                     console.error(error);
@@ -240,7 +230,7 @@ const Prestation = () => {
                         <Row className='mt-5'>
                             <div className='d-flex align-items-center gap-4'>
                                 <UserOutlined className='fs-1' />
-                                <h4>Prestation</h4>
+                                <h4>Notats</h4>
                             </div>
                         </Row>
                         <Row>
@@ -251,10 +241,10 @@ const Prestation = () => {
                                     <Col xl={6}> <label>Titre</label> </Col>
                                     <Col xl={6}>
                                         <MDBInput
-                                            value={formValue.titre}
-                                            name='titre'
+                                            value={formValue.titre_n}
+                                            name='titre_n'
                                             onChange={onChange}
-                                            id='validationCustom04'
+                                            id='validationCustom01'
                                             required
 
                                         />
@@ -263,40 +253,6 @@ const Prestation = () => {
 
 
                                 
-                                <MDBValidationItem feedback='Merci de remplire le prix.' invalid>
-
-                                    <Col xl={6}> <label>Prix</label> </Col>
-                                    <Col xl={6}>
-                                        <MDBInput
-
-                                            value={formValue.prix}
-                                            name='prix'
-                                            onChange={onChange}
-                                            id='validationCustom02'
-                                            required
-                                            type='number' // Specify the input type as 'number'
-                                            step='any' // Allow any decimal value
-                                            min='0'
-
-                                        />
-                                    </Col>
-                                </MDBValidationItem>
-                                <MDBValidationItem feedback='Merci de remplire TVA.' invalid>
-
-                                    <Col xl={6}> <label>TVA</label> </Col>
-                                    <Col xl={6}>
-                                        <MDBInput
-                                            value={formValue.tva}
-                                            name='tva'
-                                            onChange={onChange}
-                                            id='validationCustom03'
-                                            required
-                                            type='number' // Specify the input type as 'number'
-                                            step='any' // Allow any decimal value
-                                            min='0'
-                                        />
-                                    </Col>
-                                </MDBValidationItem>
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
                                     <Col xl={6}> <label>Texte</label> </Col>
 
@@ -311,10 +267,10 @@ const Prestation = () => {
                                         /> */}
 
                                         <TextArea
-                                            value={formValue.texte}
-                                            name='texte'
+                                            value={formValue.texte_n}
+                                            name='texte_n'
                                             onChange={onChange}
-                                            id='validationCustom01'
+                                            id='validationCustom02'
                                             required
                                         />
 
@@ -326,19 +282,19 @@ const Prestation = () => {
 
 
 
-                                {idPres == null && (
+                                {idNot == null && (
                                     <div className='col-12'>
                                         <Button onClick={() => {
-                                            addPrestation();
+                                            addNotats();
                                         }} type='submit'>Ajouter</Button>
 
                                     </div>
                                 )}
 
-                                {idPres != null && (
+                                {idNot != null && (
                                     <div className='col-12'>
                                         <Button onClick={() => {
-                                            updatePrestation();
+                                            updateNotats();
                                         }} type='submit'>Modifier</Button>
 
                                     </div>
@@ -354,4 +310,4 @@ const Prestation = () => {
 
     );
 };
-export default Prestation;
+export default Notats;

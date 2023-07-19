@@ -15,6 +15,8 @@ import Devis from './Pages/Devis';
 import Prestation from './Pages/Prestation';
 import Ldevis from './Pages/Ldevis';
 import Lprestations from './Pages/Lprestations';
+import Notats from './Pages/Notats';
+import Lnotats from './Pages/Lnotats';
 
 
 
@@ -26,8 +28,10 @@ function App() {
       <Route path="/settings" element={(<Settings />)} ></Route>
       <Route path="/devis" element={(<Devis/>)} ></Route>
       <Route path="/prestation" element={(<Prestation/>)} ></Route>
+      <Route path="/notats" element={(<Notats/>)} ></Route>
       <Route path="/ldevis" element={(<Ldevis/>)} ></Route>
       <Route path="/lprestations" element={(<Lprestations/>)} ></Route>
+      <Route path="/lnotats" element={(<Lnotats/>)} ></Route>
       <Route path="/" element={(<Login />)} ></Route>
 
     </Routes >
