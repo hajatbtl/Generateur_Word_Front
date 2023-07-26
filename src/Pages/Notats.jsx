@@ -34,7 +34,7 @@ const Notats = () => {
     const { TextArea } = Input;
 
     useEffect(() => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/' + idNot, {
+        fetch('http://localhost:5000/api/notats/' + idNot, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -79,7 +79,7 @@ const Notats = () => {
     const addNotats = () => {
         if (formValue.texte_n && formValue.titre_n) {
             // Tous les champs sont remplis
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/add', {
+            fetch('http://localhost:5000/api/notats/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -139,7 +139,7 @@ const Notats = () => {
     function updateNotats() {
         if (formValue.texte_n && formValue.titre_n) {
             // Tous les champs sont remplis
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/update/' + idNot, {
+            fetch('http://localhost:5000/api/notats/update/' + idNot, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -34,7 +34,7 @@ const Prestation = () => {
     const { TextArea } = Input;
 
     useEffect(() => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/' + idPres, {
+        fetch('http://localhost:5000/api/prestation/' + idPres, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -81,7 +81,7 @@ const Prestation = () => {
     const addPrestation = () => {
         if (formValue.texte && formValue.prix && formValue.tva && formValue.titre) {
             // Tous les champs sont remplis
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/add', {
+            fetch('http://localhost:5000/api/prestation/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -145,7 +145,7 @@ const Prestation = () => {
     function updatePrestation() {
         if (formValue.texte && formValue.prix && formValue.tva && formValue.titre) {
             // Tous les champs sont remplis
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/update/' + idPres, {
+            fetch('http://localhost:5000/api/prestation/update/' + idPres, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

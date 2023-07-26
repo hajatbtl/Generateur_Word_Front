@@ -60,7 +60,7 @@ const Settings = () => {
         e.preventDefault()
         if (formValue.ancienmdp == formValue.mdp) {
 
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/user/update/' + Cookies.get('id'), {
+            fetch('http://localhost:5000/api/user/update/' + Cookies.get('id'), {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(

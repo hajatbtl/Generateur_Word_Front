@@ -61,7 +61,7 @@ const Lprestations = () => {
     );
 
     const getPrestation = () => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation')
+        fetch('http://localhost:5000/api/prestation')
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -108,7 +108,7 @@ const Lprestations = () => {
 
                         let id = record.id_p;
 
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation/delete/' + id, {
+            fetch('http://localhost:5000/api/prestation/delete/' + id, {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' }
                         })

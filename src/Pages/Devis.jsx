@@ -41,52 +41,106 @@ const Devis = () => {
     const [file, setFile] = useState(null);
     const [fileName, setFileName] = useState('');
     const [imageDataUrl, setImageDataUrl] = useState(null);
+    const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
+
+    // const handleFileUpload = async (file) => {
+    //     const formData = new FormData();
+    //     formData.append("file", file);
+    //     const res = await axios.post("http://localhost:5000/api/upload", formData);
+    //     setFileName(res.data);
+
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //         const image = new Image();
+    //         image.src = reader.result;
+    //         image.onload = () => {
+    //             const dataUrl = reader.result;
+    //             setImageDataUrl(dataUrl);
+
+    //             // Calculate target width and height based on the desired height of 500 pixels
+    //             const targetHeight = 300;
+    //             const aspectRatio = image.width / image.height;
+    //             const targetWidth = targetHeight * aspectRatio;
+
+    //             const canvas = document.createElement('canvas');
+    //             const ctx = canvas.getContext('2d');
+
+    //             canvas.width = targetWidth;
+    //             canvas.height = targetHeight;
+
+    //             // Draw the image with the calculated dimensions
+    //             ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+
+    //             // Get the resized data URL
+    //             const resizedDataURL = canvas.toDataURL('image/jpeg');
+
+    //             setFile(resizedDataURL);
+    //             setFormValue({ ...formValue, image: resizedDataURL });
+    //             // setFileName(file.name); // Ajout du nom du fichier
+    //         };
+    //     };
+    //     reader.readAsDataURL(file);
+    // };
 
     const handleFileUpload = async (file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        const res = await axios.post("https://api.boring-hermann.212-227-197-242.plesk.page/api/upload", formData);
-        setFileName(res.data);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const image = new Image();
-            image.src = reader.result;
-            image.onload = () => {
-                const dataUrl = reader.result;
-                setImageDataUrl(dataUrl)
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const aspectRatio = image.width / image.height;
-                const targetWidth = 700;
-                const targetHeight = targetWidth / aspectRatio;
-                canvas.width = targetWidth;
-                canvas.height = targetHeight;
-                ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
-                const resizedDataURL = canvas.toDataURL('image/jpeg');
-                setFile(resizedDataURL);
-                setFormValue({ ...formValue, image: resizedDataURL });
-                // setFileName(file.name); // Ajout du nom du fichier
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const res = await axios.post("http://localhost:5000/api/upload", formData);
+            setFileName(res.data);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const image = new Image();
+                image.src = reader.result;
+                image.onload = () => {
+                    const dataUrl = reader.result;
+                    setImageDataUrl(dataUrl);
+
+                    // Calculate target width and height based on the desired height of 500 pixels
+                    const targetHeight = 300;
+                    const aspectRatio = image.width / image.height;
+                    const targetWidth = targetHeight * aspectRatio;
+
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    canvas.width = targetWidth;
+                    canvas.height = targetHeight;
+
+                    // Draw the image with the calculated dimensions
+                    ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+
+                    // Get the resized data URL
+                    const resizedDataURL = canvas.toDataURL('image/jpeg');
+
+                    setFile(resizedDataURL);
+                    setFormValue({ ...formValue, image: resizedDataURL });
+                    // setFileName(file.name); // Ajout du nom du fichier
+                };
             };
-        };
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error("Error handling file upload:", error);
+        }
     };
 
     const handleFileUploads = (file) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const dataUrl = reader.result;
-          // Use the dataUrl as needed (e.g., set state)
-          setImageDataUrl(dataUrl)
+            const dataUrl = reader.result;
+            // Use the dataUrl as needed (e.g., set state)
+            setImageDataUrl(dataUrl)
         };
         reader.readAsDataURL(file);
-      };
+    };
 
     const navigate = useNavigate()
     useEffect(() => {
         if (!Cookies.get('token')) {
             navigate('/')
         }
-    })
+    }, [])
 
     const {
         token: { colorBgContainer },
@@ -128,32 +182,38 @@ const Devis = () => {
 
         </Menu>
     );
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(3);
 
     const handleStepChange = (step) => {
         setCurrentStep(step);
     };
     const [formValue, setFormValue] = useState({
         date: '',
-        titre_d:'',
+        titre_d: '',
         référence: '',
         nomi: Cookies.get("nom") || '',
         prénomi: Cookies.get("prenom") || '',
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
+
+
+
         nom: '',
         prenom: '',
         mission: '',
         adresse: '',
         client: '',
+        nom_c: '',
         tel: '',
         mail: '',
         adressef: '',
         image: '',
+
+
         titre: '',
         reference: '',
-        titre_n:'',
-        texte_n:'',
+        titre_n: '',
+        texte_n: '',
         id_d: '',
         id_p: '',
 
@@ -162,8 +222,13 @@ const Devis = () => {
         mail_inter: Cookies.get("email") || '',
         tel_inter: Cookies.get("tel") || '',
 
+        prestationslist: [],
+        notatslist: [],
+
+
 
     });
+
 
     const onChange = (e) => {
         setFormValue({ ...formValue, [e.target.name]: e.target.value });
@@ -177,67 +242,103 @@ const Devis = () => {
     const iddevis = queryParams.get('id');
 
     useEffect(() => {
-
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/all/' + iddevis, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        })
-            .then(response => response.json())
-            .then((data) => {
-                setFormValue({
-                    ...formValue,
-                    date: data[0].date,
-                    référence: data[0].reference,
-                    titre_d: data[0].titre_d,
-
-                    nomi: data[0].nom,
-                    prénomi: data[0].prenom,
-                    teli: data[0].tel_c,
-                    maili: data[0].mail_c,
-
-
-                    adressef: data[0].adressef,
-                    mail: data[0].mail_c,
-                    tel: data[0].tel_c,
-                    adresse: data[0].adresse,
-                    mission: data[0].mission,
-                    nom_c: data[0].nom_client,
-                    prenom: data[0].prenom_c,
-                    nom: data[0].nom_c,
-                    image: data[0].image,
-
-                    titre: data[0].titre,
-                    prix: data[0].prix,
-                    tva: data[0].tva,
-                    texte: data[0].texte,
-                    idp: data[0].id_p,
-                });
-
-
-
-
+        if (iddevis !== null) {
+            fetch('http://localhost:5000/api/devis/devisall/' + iddevis, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
             })
-            .catch(error => {
-                console.error(error);
-                // Gestion des erreurs
-            });
+                .then(response => response.json())
+                .then((data) => {
+                    if (data) {
+                        console.log('babababab:   , ', data.devis)
+                        setFormValue({
+                            ...formValue,
+                            date: data.devis.date,
+                            référence: data.devis.reference,
+                            titre_d: data.devis.titre_d,
+                            nomi: data.devis.nom_inter,
+                            prénomi: data.devis.prenom_inter,
+                            teli: data.devis.tel_inter,
+                            maili: data.devis.mail_inter,
+                            adressef: data.client.adressef,
+                            mail: data.client.mail,
+                            tel: data.client.tel,
+                            adresse: data.client.adresse,
+                            mission: data.client.mission,
+                            nom: data.client.nom,
+                            prenom: data.client.prenom,
+                            nom_c: data.client.nom_c,
+                            image: data.client.image,
+                            nom_inter: data.devis.nom_inter,
+                            prenom_inter: data.devis.prenom_inter,
+                            mail_inter: data.devis.mail_inter,
+                            tel_inter: data.devis.tel_inter,
+
+                        });
+
+
+
+                        // const formattedData = data.prestation.map(item => {
+                        //     return {
+                        //         value: item.id_p,
+                        //         label: item.titre,
+                        //         prix: item.prix,
+                        //         tva: item.tva,
+                        //     };
+                        // });
+
+                        // setPrestations(formattedData);
+
+                        let presta = []
+                        data?.prestation?.forEach(d => {
+                            presta.push(d.id_p)
+                        });
+                        setSelectPrestationsOption(presta)
+
+                        let notats = []
+                        data?.notats?.forEach(d => {
+                            notats.push(d.id_n)
+                        });
+                        setSelectNotatsOption(notats)
+
+
+
+                        // let optionsNotes = [];
+                        // data.notats.forEach(element => {
+                        //     optionsNotes.push(element);
+                        // });
+                        // setNotats(optionsNotes);
+
+
+
+                    } else {
+                        // Handle the case when data is empty
+                        // For example, set default values or show an error message
+                        console.log("Data is empty");
+                    }
+                })
+                .catch(error => {
+                    // Handle any fetch errors here
+                    console.error('Error fetching data:', error);
+                });
+        }
     }, []);
+
 
 
     function updateDevisWithClient() {
         const imgUrl = (!file || file === "") ? "" : fileName;
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/update/all/' + iddevis, {
+        fetch('http://localhost:5000/api/devis/update/all/' + iddevis, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                texte: formValue.texte,
-                prix: formValue.prix,
-                tva: formValue.tva,
-                titre: formValue.titre,
-
-                date: formValue.date,
-                titre_d:formValue.titre_d,
+                date: dayjs(formValue.date).format('YYYY-MM-DD HH:mm:ss'),
+                titre_d: formValue.titre_d,
                 reference: formValue.référence,
+                nom_inter: formValue.nom_inter,
+                prenom_inter: formValue.prenom_inter,
+                mail_inter: formValue.mail_inter,
+                tel_inter: formValue.tel_inter,
 
                 nom_c: formValue.nom_c,
                 adresse: formValue.adresse,
@@ -249,15 +350,13 @@ const Devis = () => {
                 prenom: formValue.prenom,
                 image: imgUrl,
 
-                nomi: formValue.nomi,
-                prenomi: formValue.prénomi,
-                emaili: formValue.maili,
-                teli: formValue.teli
+
             }),
         })
             .then(response => response.json())
             .then((data) => {
-                updatedevisWithPrestation();
+                devisWithPrestation(iddevis);
+                devisWithNotats(iddevis);
                 Modal.info({
                     title: '',
                     content: (
@@ -273,6 +372,38 @@ const Devis = () => {
             });
 
     }
+
+    function deleteDevisWithPrestation() {
+
+        fetch('http://localhost:5000/api/devisWithPrestation/delete/' + iddevis, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                deleteDevisWithNotats();
+                updateDevisWithClient();
+            });
+
+
+    }
+
+    function deleteDevisWithNotats() {
+
+        fetch('http://localhost:5000/api/devisWithNotats/delete/' + iddevis, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+
+            });
+
+
+    }
+
 
     const generateDevis = () => {
         const imageOptions = {
@@ -290,6 +421,7 @@ const Devis = () => {
                     );
                 });
             },
+
             getSize(img, url, tagName) {
                 return new Promise(function (resolve, reject) {
                     const image = new Image();
@@ -310,6 +442,7 @@ const Devis = () => {
             },
         };
 
+
         loadFile(
             require('../../src/devis.docx'),
             function (error, content) {
@@ -322,6 +455,10 @@ const Devis = () => {
                 const doc = new Docxtemplater(zip, {
                     modules: [new ImageModule(imageOptions)],
                 });
+
+                let renderingObj = {
+
+                }
 
                 doc.renderAsync(formValue).then(function () {
                     const out = doc.getZip().generate({
@@ -336,13 +473,15 @@ const Devis = () => {
     };
 
     const getPrestation = () => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/prestation')
+        fetch('http://localhost:5000/api/prestation')
             .then(response => response.json())
             .then(data => {
                 const formattedData = data.map(item => {
                     return {
                         value: item.id_p,
                         label: item.titre,
+                        prix: item.prix,
+                        tva: item.tva,
                     };
                 });
                 setPrestations(formattedData);
@@ -351,13 +490,14 @@ const Devis = () => {
             .catch(error => console.error(error));
     }
     const getNotats = () => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats')
+        fetch('http://localhost:5000/api/notats')
             .then(response => response.json())
             .then(data => {
                 const formattedData = data.map(item => {
                     return {
                         value: item.id_n,
                         label: item.titre_n,
+
                     };
                 });
                 setNotats(formattedData);
@@ -366,17 +506,16 @@ const Devis = () => {
             .catch(error => console.error(error));
     }
 
-    const onSelect = (e) => {
-        localStorage.setItem('selectedPresId', e);
-        const element = prestationsList.find(item => item.id_p === e);
-        setFormValue({ ...formValue, titre: element.titre, texte: element.texte, prix: element.prix, tva: element.tva, });
-    }
+    // const onSelect = (e) => {
+    //     localStorage.setItem('selectedPresId', e);
+    //     const element = prestationsList.find(item => item.id_p === e);
+    //     setFormValue({ ...formValue, titre: element.titre, texte: element.texte, prix: element.prix, tva: element.tva, });
+    // }
 
     const addClient = () => {
-        let idUser = localStorage.getItem('idUser');
 
         let selectedPresId = localStorage.getItem('selectedPresId');
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/client/add', {
+        fetch('http://localhost:5000/api/client/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -393,10 +532,9 @@ const Devis = () => {
         })
             .then(response => response.json())
             .then(data => {
-                const client = data.client;
-                localStorage.setItem('idClient', client.id_c);
-
-                addDevis(client.id_c);
+                const clientId = data.insertId;
+                localStorage.setItem('idClient', clientId);
+                addDevis(clientId);
             })
             .catch(error => {
                 console.error(error);
@@ -404,18 +542,22 @@ const Devis = () => {
             });
     };
 
-    const devisWithPrestation = () => {
+    useEffect(() => {
+        console.log(formValue)
+    }, [formValue])
+
+    const devisWithPrestation = (id) => {
 
         let arrayAux = [];
         selectPrestationsOption.forEach(element => {
             arrayAux.push(element);
         });
         arrayAux.forEach(element => {
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithPrestation/add', {
+            fetch('http://localhost:5000/api/devisWithPrestation/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id_d: localStorage.getItem('idDevis'),
+                    id_d: id,
                     id_p: element,
                 }),
             })
@@ -431,18 +573,18 @@ const Devis = () => {
 
 
     };
-    const devisWithNotats = () => {
+    const devisWithNotats = (id) => {
 
         let arrayAux = [];
         selectNotatsOption.forEach(element => {
             arrayAux.push(element);
         });
         arrayAux.forEach(element => {
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithNotats/add', {
+            fetch('http://localhost:5000/api/devisWithNotats/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id_d: localStorage.getItem('idDevis'),
+                    id_d: id,
                     id_n: element,
                 }),
             })
@@ -459,23 +601,50 @@ const Devis = () => {
 
 
     };
-    const updatedevisWithPrestation = () => {
+    // const updatedevisWithPrestation = () => {
+    //     let arrayAux = [];
+    //     selectPrestationsOption.forEach(element => {
+    //         arrayAux.push(element);
+    //     });
+    //     arrayAux.forEach(element => {
+    //         fetch('http://localhost:5000/api/devisWithPrestation/update/' + iddevis, {
+    //             method: 'PUT',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+
+    //                 id_d: localStorage.getItem('idDevis'),
+    //                 id_p: element,
+    //             }),
+    //         })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 devisWithPrestation();
+
+    //             })
+    //             .catch(error => {
+    //                 console.error(error);
+
+    //             });
+    //     });
+    // };
+    const updatedevisWithNotats = () => {
         let arrayAux = [];
         selectPrestationsOption.forEach(element => {
             arrayAux.push(element);
         });
         arrayAux.forEach(element => {
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithPrestation/update/' + iddevis, {
+            fetch('http://localhost:5000/api/devisWithNotats/update/' + iddevis, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-        
+
                     id_d: localStorage.getItem('idDevis'),
-                    id_p: element,
+                    id_n: element,
                 }),
             })
                 .then(response => response.json())
                 .then(data => {
+                    devisWithNotats()
 
                 })
                 .catch(error => {
@@ -485,8 +654,7 @@ const Devis = () => {
         });
     };
     function addDevis(idClient) {
-        let idUser = localStorage.getItem('idUser');
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/add', {
+        fetch('http://localhost:5000/api/devis/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -504,10 +672,11 @@ const Devis = () => {
             .then(response => response.json())
             .then(data => {
                 console.log('Response:', data);
-                const devis = data.devis;
-                localStorage.setItem('idDevis', devis.id_c);
-                devisWithPrestation();
-                devisWithNotats();
+                const devisId = data.insertId;
+                localStorage.setItem('idDevis', devisId);
+                devisWithPrestation(devisId)
+                devisWithNotats(devisId);
+                generateDevis();
 
             })
             .catch(error => {
@@ -520,51 +689,11 @@ const Devis = () => {
         getNotats()
     }, [])
 
+
     useEffect(() => {
-        getSelectedrestationByDevis();
-        getSelectednotatsByDevis();
-    }, [])
-
-    useEffect(()=>{
         console.log(formValue)
-    },[formValue])
+    }, [formValue])
 
-
-    function getSelectedrestationByDevis() {
-        let idDevis = localStorage.getItem('idDevis');
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithPrestation/' + idDevis, {
-            headers: { 'Content-Type': 'application/json' },
-        })
-            .then(response => response.json())
-            .then(data => {
-                let x = []
-                data.forEach(d => {
-                    x.push(d.id_p)
-                });
-                setSelectPrestationsOption(x)
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-    function getSelectednotatsByDevis() {
-        let idDevis = localStorage.getItem('idDevis');
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/devisWithNotats/' + idDevis, {
-            headers: { 'Content-Type': 'application/json' },
-        })
-            .then(response => response.json())
-            .then(data => {
-                let x = []
-                data.forEach(d => {
-                    x.push(d.id_n)
-                });
-                setSelectNotatsOption(x)
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
 
     const options = [];
     for (let i = 10; i < 36; i++) {
@@ -573,13 +702,36 @@ const Devis = () => {
             value: i.toString(36) + i,
         });
     }
-    const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
-    
-    const handleChange = (value) => {
+
+    const handleChange = (value, text) => {
+
         let arrayAux = [];
+
+        let X = []
+        text.forEach((element) => {
+            const selectedPrestation = prestationsList.find((p) => p.id_p === element.value);
+            if (selectedPrestation) {
+                X.push({
+                    title: element.label,
+                    content: selectedPrestation.texte,
+                    prix: selectedPrestation.prix,
+                    tva: selectedPrestation.tva
+                });
+            } else {
+                console.log(`Selected element ${element.label} with value ${element.value} not found in prestationsList.`);
+            }
+        });
+
+
         value.forEach((element, index) => {
             arrayAux.push(element);
         });
+
+
+        console.log("X:", X);
+
+        setFormValue({ ...formValue, prestationslist: X });
+
 
         setSelectPrestationsOption(arrayAux);
 
@@ -590,6 +742,7 @@ const Devis = () => {
         value.forEach((element, index) => {
             arrayAux.push(element);
         });
+        setFormValue({ ...formValue, [notatsList]: arrayAux });
 
         setSelectNotatsOption(arrayAux);
 
@@ -597,7 +750,15 @@ const Devis = () => {
 
     useEffect(() => {
         console.log('setSelectPrestationsOption', selectPrestationsOption);
-    }, [selectPrestationsOption],[selectNotatsOption])
+    }, [selectPrestationsOption], [selectNotatsOption])
+
+
+    const handleDateChange = (selectedDate) => {
+        const formattedDate = dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+        setFormValue({ ...formValue, date: formattedDate });
+    };
+
+
 
     return (
         <Layout>
@@ -620,7 +781,7 @@ const Devis = () => {
                                 gap={gap}
                                 icon={<UserOutlined />}
                             >
-                           </Avatar>
+                            </Avatar>
                         </Dropdown>
                     </div>
                 </Header>
@@ -679,7 +840,9 @@ const Devis = () => {
 
                                     <MDBValidationItem feedback='Merci de remplire la date.' invalid>
                                         <Col xl={6}> <label>Date de devis</label> </Col>
-                                        <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format() }) }} />
+                                        {/* <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format() }) }} /> */}
+                                        <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} />
+
                                     </MDBValidationItem>
                                     <MDBValidationItem className='col-md-6' feedback="Merci de remplire le nom de l'nterlocuteur ." invalid>
                                         <label>Titre de Devis :</label>
@@ -896,10 +1059,16 @@ const Devis = () => {
                                                     <Button icon={<UploadOutlined />}>Cliquez pour télécharger</Button>
                                                 </Upload>
                                             </div>
-                                            <p style={{ color: 'red' }}>{fileName}</p>
+
                                         </div>
-                                        <div>
-                                            <img src={imageDataUrl ? imageDataUrl : `/upload/${formValue?.image}`} alt='' />
+                                        <div className='mt-5 col-md-4 ' style={{ border: '1px solid #ccc', margin: '10px', padding: '10px', borderRadius: '20px', textAlign: 'center', backgroundColor: '#e8f0fe' }}>
+
+                                            <p style={{ color: 'red' }}>{fileName}</p>
+                                            <img
+                                                src={imageDataUrl ? imageDataUrl : `/upload/${formValue?.image}`}
+                                                alt=""
+                                                style={{ maxWidth: '100%', maxWidth: '100%', borderRadius: '4px' }}
+                                            />
                                         </div>
                                     </MDBValidationItem>
                                     <div className='mt-5 d-flex gap-2'>
@@ -1013,14 +1182,14 @@ const Devis = () => {
 
                                         {iddevis == null && (
                                             <div className='col-12'>
-                                                <Button onClick={() => { addClient(); generateDevis(); }}> <UploadOutlined className='me-2' /> Cliquez pour télécharger</Button>
+                                                <Button onClick={() => { addClient(); }}> <UploadOutlined className='me-2' /> Cliquez pour télécharger</Button>
 
                                             </div>
                                         )}
                                         {iddevis != null && (
                                             <div className='col-12'>
                                                 <Button onClick={() => {
-                                                    generateDevis(); updateDevisWithClient();
+                                                    generateDevis(); deleteDevisWithPrestation();
                                                 }} type='submit'>Modifier</Button>
 
                                             </div>

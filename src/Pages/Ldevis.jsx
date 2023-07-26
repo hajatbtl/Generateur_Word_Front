@@ -65,7 +65,9 @@ const Ldevis = () => {
     };
     const [allData, setAllData] = useState({});
     const [formValue, setFormValue] = useState({
-        date: '2023-01-01',
+        date: '',
+        titre_d: '',
+        référence: '',
         nomi: Cookies.get("nom") || '',
         prénomi: Cookies.get("prenom") || '',
         teli: Cookies.get("tel") || '',
@@ -74,11 +76,22 @@ const Ldevis = () => {
         prenom: '',
         mission: '',
         adresse: '',
-        nom_c: '',
+        client: '',
         tel: '',
         mail: '',
         adressef: '',
-        référence: '',
+        image: '',
+        titre: '',
+        reference: '',
+        titre_n: '',
+        texte_n: '',
+        id_d: '',
+        id_p: '',
+
+        nom_inter: Cookies.get("nom") || '',
+        prenom_inter: Cookies.get("prenom") || '',
+        mail_inter: Cookies.get("email") || '',
+        tel_inter: Cookies.get("tel") || '',
 
 
     });
@@ -96,9 +109,9 @@ const Ldevis = () => {
         setData()
         let apiUrl
         if (searchValue) {
-            apiUrl = `https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/reff/${searchValue}`;
+            apiUrl = `http://localhost:5000/api/devis/reff/${searchValue}`;
         } else {
-            apiUrl = `https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/ref`;
+            apiUrl = `http://localhost:5000/api/devis/ref`;
         }
 
         fetch(apiUrl)
@@ -150,12 +163,10 @@ const Ldevis = () => {
 
             render: (_, record) => (
 
-
-
                 <Space size="middle">
                     <Button size="sm" onClick={async () => {
-                        // let clientId = record.id_c;
-                        // await getData(clientId , record.id_d);
+                        let clientId = record.id_c;
+                        await getData(clientId, record.id_d);
                         generateDevis(record);
                         console.log(record)
                     }}>
@@ -171,37 +182,39 @@ const Ldevis = () => {
 
     ]
 
-    // const getData = async (id, idDevis) => {
-    //     const res = await axios.get('https://api.boring-hermann.212-227-197-242.plesk.page/api/client/' + id);
-    //     console.log(res.data)
-    //     const res1 = await axios.get('https://api.boring-hermann.212-227-197-242.plesk.page/api/devis/' + idDevis);
-    //     setFormValue(prevState => ({
-    //         ...prevState,
-    //         nom: res.data[0].nom,
-    //         prenom: res.data[0].prenom,
-    //         mission: res.data[0].mission,
-    //         adresse: res.data[0].adresse,
-    //         nom_c: res.data[0].nom_c,
-    //         mail: res.data[0].mail,
-    //         adressef: res.data[0].adressef,
-    //         référence: res1.data[0].reference,
-    //     }));
-    //     setAllData({
-    //         nom: res.data[0].nom,
-    //         prenom: res.data[0].prenom,
-    //         mission: res.data[0].mission,
-    //         adresse: res.data[0].adresse,
-    //         nom_c: res.data[0].nom_c,
-    //         mail: res.data[0].mail,
-    //         adressef: res.data[0].adressef,
-    //         référence: res1.data[0].reference,
-    //     })
-    // }
+    const getData = async (id, idDevis) => {
+        const res = await axios.get('http://localhost:5000/api/devis/all/' + idDevis);
+        setFormValue({
+            ...formValue,
+            date: res.data[0].date,
+            référence: res.data[0].reference,
+            titre_d: res.data[0].titre_d,
+            nomi: res.data[0].nom,
+            prénomi: res.data[0].prenom,
+            teli: res.data[0].tel_c,
+            maili: res.data[0].mail_c,
+            adressef: res.data[0].adressef,
+            mail: res.data[0].mail_c,
+            tel: res.data[0].tel_c,
+            adresse: res.data[0].adresse,
+            mission: res.data[0].mission,
+            nom_c: res.data[0].nom_client,
+            prenom: res.data[0].prenom_c,
+            nom: res.data[0].nom_c,
+            image: res.data[0].image,
+            titre: res.data[0].titre,
+            prix: res.data[0].prix,
+            tva: res.data[0].tva,
+            texte: res.data[0].texte,
+            idp: res.data[0].id_p,
+        });
+      
+    }
 
     const generateDevis = async (record) => {
 
         loadFile(
-            require('../../src/devis2.docx'),
+            require('../../src/devis.docx'),
             function (error, content) {
                 if (error) {
                     console.error(error);
@@ -274,11 +287,11 @@ const Ldevis = () => {
                                 </Link>
                             </div>
 
-                            <div>
+                            {/* <div>
                                 <label>Rechercher par la référance</label>
 
                                 <Input name='reference' onChange={(e) => setSearchValue(e.target.value)} placeholder="Référance" />
-                            </div>
+                            </div> */}
 
 
                         </div>

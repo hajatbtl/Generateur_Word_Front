@@ -42,9 +42,10 @@ const Login = () => {
         const password = e.target.password.value;
 
         try {
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/auth/login', {
+            fetch('http://localhost:5000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                mode: 'cors', // Set to 'cors' to allow all origins
                 body: JSON.stringify({
                     email: email,
                     password: password

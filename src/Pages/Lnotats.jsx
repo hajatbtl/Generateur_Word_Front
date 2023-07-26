@@ -59,7 +59,7 @@ const Lnotats = () => {
     );
 
     const getNotats = () => {
-        fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats')
+        fetch('http://localhost:5000/api/notats')
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -97,7 +97,7 @@ const Lnotats = () => {
 
                         let id = record.id_n;
 
-            fetch('https://api.boring-hermann.212-227-197-242.plesk.page/api/notats/delete/' + id, {
+            fetch('http://localhost:5000/api/notats/delete/' + id, {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' }
                         })
