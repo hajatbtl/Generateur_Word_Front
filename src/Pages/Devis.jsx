@@ -182,7 +182,7 @@ const Devis = () => {
 
         </Menu>
     );
-    const [currentStep, setCurrentStep] = useState(3);
+    const [currentStep, setCurrentStep] = useState(0);
 
     const handleStepChange = (step) => {
         setCurrentStep(step);
@@ -256,10 +256,10 @@ const Devis = () => {
                             date: data.devis.date,
                             référence: data.devis.reference,
                             titre_d: data.devis.titre_d,
-                            nomi: data.devis.nom_inter,
-                            prénomi: data.devis.prenom_inter,
-                            teli: data.devis.tel_inter,
-                            maili: data.devis.mail_inter,
+                            // nomi: data.devis.nom_inter,
+                            // prénomi: data.devis.prenom_inter,
+                            // teli: data.devis.tel_inter,
+                            // maili: data.devis.mail_inter,
                             adressef: data.client.adressef,
                             mail: data.client.mail,
                             tel: data.client.tel,
@@ -712,8 +712,8 @@ const Devis = () => {
             const selectedPrestation = prestationsList.find((p) => p.id_p === element.value);
             if (selectedPrestation) {
                 X.push({
-                    title: element.label,
-                    content: selectedPrestation.texte,
+                    titre: element.label,
+                    texte: selectedPrestation.texte,
                     prix: selectedPrestation.prix,
                     tva: selectedPrestation.tva
                 });

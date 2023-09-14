@@ -167,7 +167,7 @@ const Ldevis = () => {
                     <Button size="sm" onClick={async () => {
                         let clientId = record.id_c;
                         await getData(clientId, record.id_d);
-                        generateDevis(record);
+                        generateDevis(formValue);
                         console.log(record)
                     }}>
                         < DownloadOutlined className='fs-5 m-1' ></DownloadOutlined > </Button>
@@ -183,36 +183,75 @@ const Ldevis = () => {
     ]
 
     const getData = async (id, idDevis) => {
-        const res = await axios.get('http://localhost:5000/api/devis/all/' + idDevis);
-        setFormValue({
-            ...formValue,
-            date: res.data[0].date,
-            référence: res.data[0].reference,
-            titre_d: res.data[0].titre_d,
-            nomi: res.data[0].nom,
-            prénomi: res.data[0].prenom,
-            teli: res.data[0].tel_c,
-            maili: res.data[0].mail_c,
-            adressef: res.data[0].adressef,
-            mail: res.data[0].mail_c,
-            tel: res.data[0].tel_c,
-            adresse: res.data[0].adresse,
-            mission: res.data[0].mission,
-            nom_c: res.data[0].nom_client,
-            prenom: res.data[0].prenom_c,
-            nom: res.data[0].nom_c,
-            image: res.data[0].image,
-            titre: res.data[0].titre,
-            prix: res.data[0].prix,
-            tva: res.data[0].tva,
-            texte: res.data[0].texte,
-            idp: res.data[0].id_p,
-        });
-      
+        await fetch('http://localhost:5000/api/devis/devisall/' + idDevis, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(response => response.json())
+            .then((data) => {
+                if (data) {
+                    console.log('babababab:   , ', data)
+                    setFormValue({
+                        ...formValue,
+                        date: data.devis.date,
+                        référence: data.devis.reference,
+                        titre_d: data.devis.titre_d,
+                        // nomi: data.devis.nom_inter,
+                        // prénomi: data.devis.prenom_inter,
+                        // teli: data.devis.tel_inter,
+                        // maili: data.devis.mail_inter,
+                        adressef: data.client.adressef,
+                        mail: data.client.mail,
+                        tel: data.client.tel,
+                        adresse: data.client.adresse,
+                        mission: data.client.mission,
+                        nom: data.client.nom,
+                        prenom: data.client.prenom,
+                        nom_c: data.client.nom_c,
+                        image: data.client.image,
+                        nom_inter: data.devis.nom_inter,
+                        prenom_inter: data.devis.prenom_inter,
+                        mail_inter: data.devis.mail_inter,
+                        tel_inter: data.devis.tel_inter,
+                        prestationslist: data.prestation,
+                        notatslist: data.notats,
+                    });
+                }
+            })
+        // setFormValue({
+        //     ...formValue,
+        //     date: res.data[0].date,
+        //     référence: res.data[0].reference,
+        //     titre_d: res.data[0].titre_d,
+        //     nomi: res.data[0].nom,
+        //     prénomi: res.data[0].prenom,
+        //     teli: res.data[0].tel_c,
+        //     maili: res.data[0].mail_c,
+        //     adressef: res.data[0].adressef,
+        //     mail: res.data[0].mail_c,
+        //     tel: res.data[0].tel_c,
+        //     adresse: res.data[0].adresse,
+        //     mission: res.data[0].mission,
+        //     nom_c: res.data[0].nom_client,
+        //     prenom: res.data[0].prenom_c,
+        //     nom: res.data[0].nom_c,
+        //     image: res.data[0].image,
+        //     titre: res.data[0].titre,
+        //     prix: res.data[0].prix,
+        //     tva: res.data[0].tva,
+        //     texte: res.data[0].texte,
+        //     idp: res.data[0].id_p,
+        // });
+
     }
+
+    useEffect(() => {
+        console.log(formValue)
+    },[formValue])
 
     const generateDevis = async (record) => {
 
+        console.log(record)
         loadFile(
             require('../../src/devis.docx'),
             function (error, content) {
