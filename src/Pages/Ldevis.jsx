@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined } from '@ant-design/icons';
+import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined,DeleteOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -176,6 +176,23 @@ const Ldevis = () => {
                         console.log('devisIddd :  ', record.id_d);
                     }} >
                         < EditOutlined className='fs-5 m-1' ></EditOutlined> </Button>
+                    <Button size="sm" variant="danger" 
+                    // onClick={() => {
+
+                    //     let id = record.id_d;
+
+                    //     fetch('http://localhost:5000/api/devisWithRelatedData/delete/' + id, {
+                    //         method: 'DELETE',
+                    //         headers: { 'Content-Type': 'application/json' }
+                    //     })
+                    //         .then(response => response.json())
+                    //         .then(data => {
+                    //             console.log(data)
+                    //         });
+
+                    // }}
+                    >
+                        <DeleteOutlined className='fs-5 m-1' ></DeleteOutlined></Button>
                 </Space>
             ),
         }
@@ -247,7 +264,7 @@ const Ldevis = () => {
 
     useEffect(() => {
         console.log(formValue)
-    },[formValue])
+    }, [formValue])
 
     const generateDevis = async (record) => {
 

@@ -45,7 +45,6 @@ const Devis = () => {
     const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
     const { TextArea } = Input;
     const [disabled, setDisabled] = useState(false);
-    const [accompte, setAccompte] = useState(0);
 
 
     // const handleFileUpload = async (file) => {
@@ -252,6 +251,8 @@ const Devis = () => {
     const queryParams = new URLSearchParams(location.search);
     const iddevis = queryParams.get('id');
 
+    
+ 
     useEffect(() => {
         if (iddevis !== null) {
             fetch('http://localhost:5000/api/devis/devisall/' + iddevis, {
@@ -284,9 +285,16 @@ const Devis = () => {
                             prenom_inter: data.devis.prenom_inter,
                             mail_inter: data.devis.mail_inter,
                             tel_inter: data.devis.tel_inter,
+                            texte_prerequis:data.devis.prerequis,
+                            texte_visite:data.devis.visite,
+                            texte_preavis:data.devis.preavis,
+                            texte_missiondce:data.devis.mission_dec,
+                            accompte:data.devis.accompte
 
                         });
 
+
+                        
 
 
                         // const formattedData = data.prestation.map(item => {
@@ -350,6 +358,11 @@ const Devis = () => {
                 prenom_inter: formValue.prenom_inter,
                 mail_inter: formValue.mail_inter,
                 tel_inter: formValue.tel_inter,
+                prerequis:formValue.texte_prerequis,
+                visite:formValue.texte_visite,
+                mission_dec:formValue.texte_missiondce,
+                preavis:formValue.texte_preavis,
+                accompte:formValue.accompte,
 
                 nom_c: formValue.nom_c,
                 adresse: formValue.adresse,
@@ -680,7 +693,7 @@ const Devis = () => {
                 visite:formValue.texte_visite,
                 mission_dec	:formValue.texte_missiondce,
                 preavis:formValue.texte_preavis,
-                accompte:accompte,
+                accompte:formValue.accompte,
 
                 
                 id_u: Cookies.get("id"),
@@ -1188,11 +1201,11 @@ const Devis = () => {
 
                                         <Col xl={6}>
 
-                                            <Slider onChange={(v) =>{
-                                                 setAccompte(v);
+                                            <Slider 
+                                            onChange={(v) =>{
+        
                                                  setFormValue({ ...formValue, accompte: v });
-                                                 console.log('slider : ' , v);
-                                                 }} value={accompte} step={5} defaultValue={0} />
+                                                 }} value={formValue.accompte} step={5} defaultValue={formValue.accompte} />
 
                                         </Col>
                                 </MDBValidationItem>
