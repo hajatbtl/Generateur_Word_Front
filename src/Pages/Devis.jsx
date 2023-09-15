@@ -200,6 +200,12 @@ const Devis = () => {
         prénomi: Cookies.get("prenom") || '',
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
+        texte_prerequis:'',
+        texte_visite:'',
+        texte_missiondce:'',
+        texte_preavis:'',
+        accompte:'',
+
 
 
 
@@ -670,6 +676,13 @@ const Devis = () => {
                 prenom_inter: formValue.prenom_inter,
                 tel_inter: formValue.tel_inter,
                 mail_inter: formValue.mail_inter,
+                prerequis:formValue.texte_prerequis,
+                visite:formValue.texte_visite,
+                mission_dec	:formValue.texte_missiondce,
+                preavis:formValue.texte_preavis,
+                accompte:accompte,
+
+                
                 id_u: Cookies.get("id"),
                 id_c: idClient,
             }),
@@ -1175,7 +1188,11 @@ const Devis = () => {
 
                                         <Col xl={6}>
 
-                                            <Slider onChange={(v) => setAccompte(v)} value={accompte} step={5} defaultValue={0} />
+                                            <Slider onChange={(v) =>{
+                                                 setAccompte(v);
+                                                 setFormValue({ ...formValue, accompte: v });
+                                                 console.log('slider : ' , v);
+                                                 }} value={accompte} step={5} defaultValue={0} />
 
                                         </Col>
                                 </MDBValidationItem>
