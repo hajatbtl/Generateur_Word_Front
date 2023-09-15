@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { SettingOutlined, LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal } from 'antd';
+import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal, Input, Slider, Switch } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
 import { Content } from 'antd/es/layout/layout';
-import { MDBInput, MDBValidation, MDBValidationItem } from 'mdb-react-ui-kit';
+import { MDBValidation, MDBValidationItem } from 'mdb-react-ui-kit';
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 import PizZipUtils from 'pizzip/utils/index.js';
@@ -13,6 +13,7 @@ import { saveAs } from 'file-saver';
 import Cookies from 'js-cookie';
 import { useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { MDBInput } from 'mdb-react-ui-kit';
 
 import 'dayjs/locale/fr';
 import locale from 'antd/es/date-picker/locale/fr_FR';
@@ -42,6 +43,10 @@ const Devis = () => {
     const [fileName, setFileName] = useState('');
     const [imageDataUrl, setImageDataUrl] = useState(null);
     const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
+    const { TextArea } = Input;
+    const [disabled, setDisabled] = useState(false);
+    const [accompte, setAccompte] = useState(0);
+
 
     // const handleFileUpload = async (file) => {
     //     const formData = new FormData();
@@ -811,6 +816,10 @@ const Devis = () => {
 
                             },
                             {
+                                title: 'Information',
+
+                            },
+                            {
                                 title: 'Prestation',
                             },
                             {
@@ -1071,7 +1080,7 @@ const Devis = () => {
                                             />
                                         </div>
                                     </MDBValidationItem>
-                                    <div className='mt-5 d-flex gap-2'>
+                                    <div className='d-flex gap-2'>
                                         <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
 
                                         <Button type='submit'>Suivant</Button>
@@ -1080,7 +1089,112 @@ const Devis = () => {
                             </Row>
                         </>
                     }
-                    {currentStep === 3 &&
+                    {currentStep === 3 && <>
+
+                        <Row className='mt-5'>
+                            <div className='d-flex align-items-center gap-4'>
+                                <CodepenOutlined className='fs-1' />
+                                <h4>Information</h4>
+                            </div>
+                        </Row>
+                        <Row>
+                            <MDBValidation onSubmit={(e) => {
+                                let form = document.querySelector('.needs-validation')
+                                if (form.checkValidity()) {
+                                    next()
+                                }
+                            }} className='row g-3'>
+
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <label>Prérequis</label> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.texte_prerequis}
+                                            name='texte_prerequis'
+                                            onChange={onChange}
+                                            id='validationCustom15'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <label>Visite</label> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.texte_visite}
+                                            name='texte_visite'
+                                            onChange={onChange}
+                                            id='validationCustom16'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <label>Mission DCE</label> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.texte_missiondce}
+                                            name='texte_missiondce'
+                                            onChange={onChange}
+                                            id='validationCustom17'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <label>Preavis</label> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.texte_preavis}
+                                            name='texte_preavis'
+                                            onChange={onChange}
+                                            id='validationCustom18'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de choisir Accompte.' invalid>
+                                   
+                                        <Col xl={6}> <label>Accompte</label> </Col>
+
+                                        <Col xl={6}>
+
+                                            <Slider onChange={(v) => setAccompte(v)} value={accompte} step={5} defaultValue={0} />
+
+                                        </Col>
+                                </MDBValidationItem>
+
+
+
+                                <div className='d-flex gap-2'>
+                                    <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
+
+                                    <Button type='submit'>Suivant</Button>
+                                </div>
+
+
+
+
+                            </MDBValidation>
+                        </Row>
+                    </>}
+                    {currentStep === 4 &&
                         <>
                             <Row className='mt-5'>
                                 <div className='d-flex align-items-center gap-4'>
@@ -1121,7 +1235,7 @@ const Devis = () => {
 
                     }
 
-                    {currentStep === 4 &&
+                    {currentStep === 5 &&
                         <>
                             <Row className='mt-5'>
                                 <div className='d-flex align-items-center gap-4'>
@@ -1162,7 +1276,7 @@ const Devis = () => {
                     }
 
 
-                    {currentStep === 5 &&
+                    {currentStep === 6 &&
                         <>
                             <Row className='mt-5'>
                                 <div className='d-flex align-items-center gap-4'>

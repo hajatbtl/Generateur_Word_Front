@@ -10,13 +10,7 @@ import { MDBValidation, MDBValidationItem } from 'mdb-react-ui-kit';
 import { useLocation } from 'react-router-dom';
 
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-    MDBInput,
-    MDBCol,
-    MDBRow,
-    MDBCheckbox,
-    MDBBtn
-} from 'mdb-react-ui-kit';
+import {MDBInput} from 'mdb-react-ui-kit';
 
 
 const { Header } = Layout;
