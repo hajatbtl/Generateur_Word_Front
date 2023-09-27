@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input } from 'antd';
+import { SettingOutlined, UserOutlined, LogoutOutlined,CloseOutlined,CheckCircleOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input,notification } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -93,23 +93,17 @@ const Prestation = () => {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    Modal.info({
-                        title: '',
-                        content: (
-                            <div>
-                                <p>Vous avez bien ajouté la prestation</p>
-                            </div>
-                        ),
-                        onOk() {
-                            setFormValue({
-                                texte: '',
-                                prix: '',
-                                tva: '',
-                                titre: '',
-                            });
-                        }
-                    });
-                    navigate('/Prestation/Listes');
+                    notification.success({
+                        
+                        description:'Vous avez bien ajouté la prestation',
+                        placement:'bottomRight',
+                        icon:<CheckCircleOutlined style={{color:'#fffff'}}/>,
+                        style:{background:'#7ae700', color:'#fff'},
+                        closeIcon:<CloseOutlined style={{color:'#ffff'}} />
+
+                    })
+                   
+                    navigate('/Prestations/Liste');
                 })
                 .catch(error => {
                     console.error(error);
@@ -158,24 +152,17 @@ const Prestation = () => {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    Modal.info({
-                        title: '',
-                        content: (
-                            <div>
-                                <p>Vous avez bien modifié la prestation</p>
-                            </div>
-                        ),
-                        onOk() {
-                            setFormValue({
-                                texte: '',
-                                prix: '',
-                                tva: '',
-                                titre: '',
-                            });
-                        }
+                    notification.success({
+                        
+                        description:'Vous avez bien modifié la prestation',
+                        placement:'bottomRight',
+                        icon:<CheckCircleOutlined style={{color:'#fffff'}}/>,
+                        style:{background:'#7ae700', color:'#fff'},
+                        closeIcon:<CloseOutlined style={{color:'#ffff'}} />
 
-                    });
-                    navigate('/Prestation/Listes');
+                    })
+                   
+                    navigate('/Prestations/Liste');
                 })
                 .catch(error => {
                     console.error(error);

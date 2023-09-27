@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input } from 'antd';
+import { SettingOutlined, UserOutlined, LogoutOutlined,CheckCircleOutlined,CloseOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input,notification } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -83,21 +83,20 @@ const Notats = () => {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    Modal.info({
-                        title: '',
-                        content: (
-                            <div>
-                                <p>Vous avez bien ajouté la notats</p>
-                            </div>
-                        ),
-                        onOk() {
-                            setFormValue({
-                                texte_n: '',
-                                titre_n: '',
-                            });
-                        }
-                    });
+                    notification.success({
+                        
+                        description:'Vous avez bien ajouter la notat',
+                        placement:'bottomRight',
+                        icon:<CheckCircleOutlined style={{color:'#fffff'}}/>,
+                        style:{background:'#7ae700', color:'#fff'},
+                        closeIcon:<CloseOutlined style={{color:'#ffff'}} />
+
+                    })
+
+                    
+
                     navigate('/Notats/Liste');
+
                 })
                 .catch(error => {
                     console.error(error);
@@ -144,21 +143,17 @@ const Notats = () => {
             })
                 .then(response => response.json())
                 .then((data) => {
-                    Modal.info({
-                        title: '',
-                        content: (
-                            <div>
-                                <p>Vous avez bien modifié la notats</p>
-                            </div>
-                        ),
-                        onOk() {
-                            setFormValue({
-                                texte_n: '',
-                                titre_n: '',
-                            });
-                        }
 
-                    });
+                    notification.success({
+                        
+                        description:'Vous avez bien modifié la notat',
+                        placement:'bottomRight',
+                        icon:<CheckCircleOutlined style={{color:'#fffff'}}/>,
+                        style:{background:'#7ae700', color:'#fff'},
+                        closeIcon:<CloseOutlined style={{color:'#ffff'}} />
+
+                    })
+                   
                     navigate('/Notats/Liste');
                 })
                 .catch(error => {

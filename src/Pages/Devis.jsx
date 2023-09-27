@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal, Input, Slider, Switch } from 'antd';
+import { SettingOutlined, LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, CheckCircleOutlined, CloseOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal, Input, Slider, notification, InputNumber } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -45,6 +45,14 @@ const Devis = () => {
     const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
     const { TextArea } = Input;
     const [disabled, setDisabled] = useState(false);
+    const onChangeSlider = (v) => {
+        setFormValue({ ...formValue, accompte: v });
+      };
+    
+      const onChangeInput = (value) => {
+        setFormValue({ ...formValue, accompte: value });
+      };
+      
 
 
     // const handleFileUpload = async (file) => {
@@ -381,15 +389,19 @@ const Devis = () => {
             .then((data) => {
                 devisWithPrestation(iddevis);
                 devisWithNotats(iddevis);
-                Modal.info({
-                    title: '',
-                    content: (
-                        <div>
-                            <p>Vous avez bien modifié le devis</p>
-                        </div>
-                    ),
 
-                });
+                notification.success({
+
+                    description: 'Vous avez bien modifié le devis',
+                    placement: 'bottomRight',
+                    icon: <CheckCircleOutlined style={{ color: '#fffff' }} />,
+                    style: { background: '#7ae700', color: '#fff' },
+                    closeIcon: <CloseOutlined style={{ color: '#ffff' }} />
+
+                })
+                navigate('/Devis/Liste');
+
+
             })
             .catch(error => {
                 console.error(error);
@@ -702,23 +714,24 @@ const Devis = () => {
         })
             .then(response => response.json())
             .then(data => {
+                notification.success({
 
-                Modal.info({
-                    title: '',
-                    content: (
-                        <div>
-                            <p>Vous avez bien telecharger le devis</p>
-                        </div>
-                    ),
-                    onOk() {
-                        const devisId = data.insertId;
-                        localStorage.setItem('idDevis', devisId);
-                        devisWithPrestation(devisId)
-                        devisWithNotats(devisId);
-                        generateDevis();
-                        navigate('/ldevis');
-                    }
-                });
+                    description: 'Vous avez bien telecharger et enregistrer votre devis',
+                    placement: 'bottomRight',
+                    icon: <CheckCircleOutlined style={{ color: '#fffff' }} />,
+                    style: { background: '#7ae700', color: '#fff' },
+                    closeIcon: <CloseOutlined style={{ color: '#ffff' }} />
+
+                })
+
+
+                const devisId = data.insertId;
+                localStorage.setItem('idDevis', devisId);
+                devisWithPrestation(devisId)
+                devisWithNotats(devisId);
+                generateDevis();
+                navigate('/Devis/Liste');
+
 
 
 
@@ -1214,14 +1227,23 @@ const Devis = () => {
                                     <Col xl={6}> <label>Accompte</label> </Col>
 
                                     <Col xl={6}>
-
-                                        <Slider
-                                            onChange={(v) => {
-
-                                                setFormValue({ ...formValue, accompte: v });
-                                            }} value={formValue.accompte} step={5} defaultValue={formValue.accompte} />
-
-                                    </Col>
+                                            <Slider
+                                                onChange={onChangeSlider}
+                                                value={formValue.accompte}
+                                                step={5}
+                                                defaultValue={formValue.accompte}
+                                            />
+                                        </Col>
+                                        <Col span={4}>
+                                            <InputNumber
+                                                min={0}
+                                                max={1}
+                                                style={{ margin: '0 16px' }}
+                                                step={5}
+                                                value={formValue.accompte}
+                                                onChange={onChangeInput}
+                                            />
+                                        </Col>
                                 </MDBValidationItem>
 
 

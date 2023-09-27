@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input } from 'antd';
+import React, { useState, useEffect,useRef } from 'react';
+import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input,Modal } from 'antd';
+import Highlighter from 'react-highlight-words';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -15,6 +16,112 @@ const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
 const GapList = [4, 3, 2, 1];
 
 const Lprestations = () => {
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+      clearFilters();
+      setSearchText('');
+    };
+    const getColumnSearchProps = (dataIndex) => ({
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        <div
+          style={{
+            padding: 8,
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{
+              marginBottom: 8,
+              display: 'block',
+            }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Search
+            </Button>
+            <Button
+              onClick={() => clearFilters && handleReset(clearFilters)}
+              size="small"
+              style={{
+                width: 90,
+              }}
+            >
+              Reset
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                confirm({
+                  closeDropdown: false,
+                });
+                setSearchText(selectedKeys[0]);
+                setSearchedColumn(dataIndex);
+              }}
+            >
+              Filter
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
+                close();
+              }}
+            >
+              close
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined
+          style={{
+            color: filtered ? '#1677ff' : undefined,
+          }}
+        />
+      ),
+      onFilter: (value, record) =>
+        record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+      render: (text) =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{
+              backgroundColor: '#ffc069',
+              padding: 0,
+            }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text ? text.toString() : ''}
+          />
+        ) : (
+          text
+        ),
+    });
     const [data, setData] = useState([]);
 
     const {
@@ -78,21 +185,25 @@ const Lprestations = () => {
             title: 'Titre',
             dataIndex: 'titre',
             key: 'titre',
+            ...getColumnSearchProps('titre'),
         },
         {
             title: 'Texte',
             dataIndex: 'texte',
             key: 'texte',
+            ...getColumnSearchProps('texte'),
         },
         {
             title: 'Prix',
             dataIndex: 'prix',
             key: 'prix',
+            ...getColumnSearchProps('prix'),
         },
         {
             title: 'TVA',
             dataIndex: 'tva',
             key: 'tva',
+            ...getColumnSearchProps('tva'),
         },
 
         {
@@ -100,21 +211,34 @@ const Lprestations = () => {
 
             render: (_, record) => (
                 <Space size="middle">
-                    <Button size="sm" variant="danger" onClick={() => {
+                    <Button size="sm" variant="danger"
+                        onClick={() => {
 
-                        let id = record.id_p;
+                            Modal.confirm({
+                                icon: <DeleteOutlined className='text-danger' />,
+                                okButtonProps: { className: 'btn-danger' },
+                                content: 'Êtes-vous certain de vouloir supprimer ce prestat ?',
+                                okText: 'Supprimer',
+                                cancelText: 'Annuler',
+                                onOk: () => {
+                                    let id = record.id_p;
 
-                        fetch('http://localhost:5000/api/prestation/delete/' + id, {
-                            method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' }
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data)
-                                getPrestation()
+                                    fetch('http://localhost:5000/api/prestation/delete/' + id, {
+                                        method: 'DELETE',
+                                        headers: { 'Content-Type': 'application/json' }
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log(data)
+                                            getPrestation()
+                                        });
+
+                                }
                             });
 
-                    }}>
+
+                        }}
+                    >
                         <DeleteOutlined className='fs-5 m-1' ></DeleteOutlined></Button>
                     <Button size="sm" className="bg-success " onClick={() => handleModifierClick(record.id_p)}>
                         < EditOutlined className='fs-5 m-1' ></EditOutlined>
