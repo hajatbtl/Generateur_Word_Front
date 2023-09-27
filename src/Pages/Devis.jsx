@@ -199,11 +199,11 @@ const Devis = () => {
         prénomi: Cookies.get("prenom") || '',
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
-        texte_prerequis:'',
-        texte_visite:'',
-        texte_missiondce:'',
-        texte_preavis:'',
-        accompte:'',
+        texte_prerequis: '',
+        texte_visite: '',
+        texte_missiondce: '',
+        texte_preavis: '',
+        accompte: '',
 
 
 
@@ -251,8 +251,8 @@ const Devis = () => {
     const queryParams = new URLSearchParams(location.search);
     const iddevis = queryParams.get('id');
 
-    
- 
+
+
     useEffect(() => {
         if (iddevis !== null) {
             fetch('http://localhost:5000/api/devis/devisall/' + iddevis, {
@@ -285,16 +285,16 @@ const Devis = () => {
                             prenom_inter: data.devis.prenom_inter,
                             mail_inter: data.devis.mail_inter,
                             tel_inter: data.devis.tel_inter,
-                            texte_prerequis:data.devis.prerequis,
-                            texte_visite:data.devis.visite,
-                            texte_preavis:data.devis.preavis,
-                            texte_missiondce:data.devis.mission_dec,
-                            accompte:data.devis.accompte
+                            texte_prerequis: data.devis.prerequis,
+                            texte_visite: data.devis.visite,
+                            texte_preavis: data.devis.preavis,
+                            texte_missiondce: data.devis.mission_dec,
+                            accompte: data.devis.accompte
 
                         });
 
 
-                        
+
 
 
                         // const formattedData = data.prestation.map(item => {
@@ -358,11 +358,11 @@ const Devis = () => {
                 prenom_inter: formValue.prenom_inter,
                 mail_inter: formValue.mail_inter,
                 tel_inter: formValue.tel_inter,
-                prerequis:formValue.texte_prerequis,
-                visite:formValue.texte_visite,
-                mission_dec:formValue.texte_missiondce,
-                preavis:formValue.texte_preavis,
-                accompte:formValue.accompte,
+                prerequis: formValue.texte_prerequis,
+                visite: formValue.texte_visite,
+                mission_dec: formValue.texte_missiondce,
+                preavis: formValue.texte_preavis,
+                accompte: formValue.accompte,
 
                 nom_c: formValue.nom_c,
                 adresse: formValue.adresse,
@@ -689,25 +689,38 @@ const Devis = () => {
                 prenom_inter: formValue.prenom_inter,
                 tel_inter: formValue.tel_inter,
                 mail_inter: formValue.mail_inter,
-                prerequis:formValue.texte_prerequis,
-                visite:formValue.texte_visite,
-                mission_dec	:formValue.texte_missiondce,
-                preavis:formValue.texte_preavis,
-                accompte:formValue.accompte,
+                prerequis: formValue.texte_prerequis,
+                visite: formValue.texte_visite,
+                mission_dec: formValue.texte_missiondce,
+                preavis: formValue.texte_preavis,
+                accompte: formValue.accompte,
 
-                
+
                 id_u: Cookies.get("id"),
                 id_c: idClient,
             }),
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Response:', data);
-                const devisId = data.insertId;
-                localStorage.setItem('idDevis', devisId);
-                devisWithPrestation(devisId)
-                devisWithNotats(devisId);
-                generateDevis();
+
+                Modal.info({
+                    title: '',
+                    content: (
+                        <div>
+                            <p>Vous avez bien telecharger le devis</p>
+                        </div>
+                    ),
+                    onOk() {
+                        const devisId = data.insertId;
+                        localStorage.setItem('idDevis', devisId);
+                        devisWithPrestation(devisId)
+                        devisWithNotats(devisId);
+                        generateDevis();
+                        navigate('/ldevis');
+                    }
+                });
+
+
 
             })
             .catch(error => {
@@ -1196,18 +1209,18 @@ const Devis = () => {
 
                                 </MDBValidationItem>
                                 <MDBValidationItem feedback='Merci de choisir Accompte.' invalid>
-                                   
-                                        <Col xl={6}> <label>Accompte</label> </Col>
 
-                                        <Col xl={6}>
+                                    <Col xl={6}> <label>Accompte</label> </Col>
 
-                                            <Slider 
-                                            onChange={(v) =>{
-        
-                                                 setFormValue({ ...formValue, accompte: v });
-                                                 }} value={formValue.accompte} step={5} defaultValue={formValue.accompte} />
+                                    <Col xl={6}>
 
-                                        </Col>
+                                        <Slider
+                                            onChange={(v) => {
+
+                                                setFormValue({ ...formValue, accompte: v });
+                                            }} value={formValue.accompte} step={5} defaultValue={formValue.accompte} />
+
+                                    </Col>
                                 </MDBValidationItem>
 
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined,DeleteOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input } from 'antd';
+import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Modal } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -31,6 +31,9 @@ function loadFile(url, callback) {
 
 
 const Ldevis = () => {
+
+    const [modal] = Modal.useModal();
+
     var ImageModule = require('docxtemplater-image-module-free');
 
     const navigate = useNavigate();
@@ -38,6 +41,7 @@ const Ldevis = () => {
     const handleModifierClick = (id) => {// Replace with your desired ID value
         navigate(`/devis/?id=${id}`); // Navigates to "/other-page/123" (example URL)
     };
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
 
@@ -150,7 +154,7 @@ const Ldevis = () => {
         },
         {
             title: 'Interlocuteur',
-            dataIndex: 'nom',
+            dataIndex: 'nom_inter',
             key: 'nom',
         },
         {
@@ -164,33 +168,49 @@ const Ldevis = () => {
             render: (_, record) => (
 
                 <Space size="middle">
+
                     <Button size="sm" onClick={async () => {
                         let clientId = record.id_c;
                         await getData(clientId, record.id_d);
-                        generateDevis(formValue);
+
                         console.log(record)
                     }}>
                         < DownloadOutlined className='fs-5 m-1' ></DownloadOutlined > </Button>
+
+
                     <Button size="sm" className="bg-success " onClick={() => {
                         handleModifierClick(record.id_d);
                         console.log('devisIddd :  ', record.id_d);
                     }} >
                         < EditOutlined className='fs-5 m-1' ></EditOutlined> </Button>
-                    <Button size="sm" variant="danger" 
-                    // onClick={() => {
 
-                    //     let id = record.id_d;
 
-                    //     fetch('http://localhost:5000/api/devisWithRelatedData/delete/' + id, {
-                    //         method: 'DELETE',
-                    //         headers: { 'Content-Type': 'application/json' }
-                    //     })
-                    //         .then(response => response.json())
-                    //         .then(data => {
-                    //             console.log(data)
-                    //         });
+                        <Button size="sm" variant="danger"
+                        onClick={() => {
 
-                    // }}
+                            Modal.confirm({
+                                icon:<DeleteOutlined className='text-danger' />,
+                                okButtonProps:{className:'btn-danger'},
+                                content: 'Êtes-vous certain de vouloir supprimer ce devis ?',
+                                okText: 'Supprimer',
+                                cancelText: 'Annuler',
+                                onOk: () => {
+                                    let id = record.id_d;
+
+                                    fetch('http://localhost:5000/api/devis/delete/' + id, {
+                                        method: 'DELETE',
+                                        headers: { 'Content-Type': 'application/json' }
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            getReferance()
+                                        });
+
+                                }
+                            });
+
+
+                        }}
                     >
                         <DeleteOutlined className='fs-5 m-1' ></DeleteOutlined></Button>
                 </Space>
@@ -209,6 +229,31 @@ const Ldevis = () => {
                 if (data) {
                     console.log('babababab:   , ', data)
                     setFormValue({
+                        ...formValue,
+                        date: data.devis.date,
+                        référence: data.devis.reference,
+                        titre_d: data.devis.titre_d,
+                        // nomi: data.devis.nom_inter,
+                        // prénomi: data.devis.prenom_inter,
+                        // teli: data.devis.tel_inter,
+                        // maili: data.devis.mail_inter,
+                        adressef: data.client.adressef,
+                        mail: data.client.mail,
+                        tel: data.client.tel,
+                        adresse: data.client.adresse,
+                        mission: data.client.mission,
+                        nom: data.client.nom,
+                        prenom: data.client.prenom,
+                        nom_c: data.client.nom_c,
+                        image: data.client.image,
+                        nom_inter: data.devis.nom_inter,
+                        prenom_inter: data.devis.prenom_inter,
+                        mail_inter: data.devis.mail_inter,
+                        tel_inter: data.devis.tel_inter,
+                        prestationslist: data.prestation,
+                        notatslist: data.notats,
+                    });
+                    generateDevis({
                         ...formValue,
                         date: data.devis.date,
                         référence: data.devis.reference,
