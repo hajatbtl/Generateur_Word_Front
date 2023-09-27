@@ -75,9 +75,9 @@ const Lprestations = () => {
 
     const columns1 = [
         {
-            title: 'id',
-            dataIndex: 'id_p',
-            key: 'id_p',
+            title: 'Titre',
+            dataIndex: 'titre',
+            key: 'titre',
         },
         {
             title: 'Texte',
@@ -94,11 +94,7 @@ const Lprestations = () => {
             dataIndex: 'tva',
             key: 'tva',
         },
-        {
-            title: 'Titre',
-            dataIndex: 'titre',
-            key: 'titre',
-        },
+
         {
             title: 'Action',
 
@@ -108,7 +104,7 @@ const Lprestations = () => {
 
                         let id = record.id_p;
 
-            fetch('http://localhost:5000/api/prestation/delete/' + id, {
+                        fetch('http://localhost:5000/api/prestation/delete/' + id, {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' }
                         })
@@ -190,7 +186,7 @@ const Lprestations = () => {
                     </Row>
 
                     <Row className='justify-content-center align-items-center'>
-                        <Table  scroll={{ x: '100%' }} className='mt-5' columns={columns1} dataSource={data} />
+                        <Table scroll={{ x: '100%' }} className='mt-5' columns={columns1} dataSource={data} />
                     </Row>
                 </Content>
 

@@ -147,6 +147,11 @@ const Ldevis = () => {
             key: 'reference',
         },
         {
+            title: 'Client',
+            dataIndex: 'nom_client',
+            key: 'nom_client',
+        },
+        {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
@@ -157,11 +162,7 @@ const Ldevis = () => {
             dataIndex: 'nom_inter',
             key: 'nom',
         },
-        {
-            title: 'Client',
-            dataIndex: 'nom_client',
-            key: 'nom_client',
-        },
+
         {
             title: 'Action',
 
@@ -185,12 +186,12 @@ const Ldevis = () => {
                         < EditOutlined className='fs-5 m-1' ></EditOutlined> </Button>
 
 
-                        <Button size="sm" variant="danger"
+                    <Button size="sm" variant="danger"
                         onClick={() => {
 
                             Modal.confirm({
-                                icon:<DeleteOutlined className='text-danger' />,
-                                okButtonProps:{className:'btn-danger'},
+                                icon: <DeleteOutlined className='text-danger' />,
+                                okButtonProps: { className: 'btn-danger' },
                                 content: 'Êtes-vous certain de vouloir supprimer ce devis ?',
                                 okText: 'Supprimer',
                                 cancelText: 'Annuler',

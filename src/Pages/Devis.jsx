@@ -1160,6 +1160,7 @@ const Devis = () => {
                                     </Col>
 
                                 </MDBValidationItem>
+                                <h2>Délais d'intervention</h2>
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
                                     <Col xl={6}> <label>Visite</label> </Col>
 
@@ -1193,7 +1194,7 @@ const Devis = () => {
 
                                 </MDBValidationItem>
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-                                    <Col xl={6}> <label>Preavis</label> </Col>
+                                    <Col xl={6}> <label>Préavis</label> </Col>
 
                                     <Col xl={6}>
 
@@ -1339,7 +1340,7 @@ const Devis = () => {
 
                                         {iddevis == null && (
                                             <div className='col-12'>
-                                                <Button onClick={() => { addClient(); }}> <UploadOutlined className='me-2' /> Cliquez pour télécharger</Button>
+                                                <Button onClick={() => { addClient(); }}> <UploadOutlined className='me-2' /> Cliquez pour enregister et télécharger</Button>
 
                                             </div>
                                         )}

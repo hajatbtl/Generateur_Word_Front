@@ -109,7 +109,7 @@ const Prestation = () => {
                             });
                         }
                     });
-                    navigate('/lprestations');
+                    navigate('/Prestation/Listes');
                 })
                 .catch(error => {
                     console.error(error);
@@ -175,7 +175,7 @@ const Prestation = () => {
                         }
 
                     });
-                    navigate('/lprestations');
+                    navigate('/Prestation/Listes');
                 })
                 .catch(error => {
                     console.error(error);

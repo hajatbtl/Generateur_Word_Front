@@ -97,7 +97,7 @@ const Notats = () => {
                             });
                         }
                     });
-                    navigate('/lnotats');
+                    navigate('/Notats/Liste');
                 })
                 .catch(error => {
                     console.error(error);
@@ -159,7 +159,7 @@ const Notats = () => {
                         }
 
                     });
-                    navigate('/lnotats');
+                    navigate('/Notats/Liste');
                 })
                 .catch(error => {
                     console.error(error);

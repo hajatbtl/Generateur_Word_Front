@@ -72,11 +72,7 @@ const Lnotats = () => {
     }, [])
 
     const columns1 = [
-        {
-            title: 'id',
-            dataIndex: 'id_n',
-            key: 'id_n',
-        },
+      
         {
             title: 'Titre',
             dataIndex: 'titre_n',

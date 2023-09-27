@@ -25,13 +25,13 @@ function App() {
     <BrowserRouter>
     <Routes>
 
-      <Route path="/settings" element={(<Settings />)} ></Route>
-      <Route path="/devis" element={(<Devis/>)} ></Route>
-      <Route path="/prestation" element={(<Prestation/>)} ></Route>
-      <Route path="/notats" element={(<Notats/>)} ></Route>
-      <Route path="/ldevis" element={(<Ldevis/>)} ></Route>
-      <Route path="/lprestations" element={(<Lprestations/>)} ></Route>
-      <Route path="/lnotats" element={(<Lnotats/>)} ></Route>
+      <Route path="/Settings" element={(<Settings />)} ></Route>
+      <Route path="/Devis" element={(<Devis/>)} ></Route>
+      <Route path="/Prestation" element={(<Prestation/>)} ></Route>
+      <Route path="/Notats" element={(<Notats/>)} ></Route>
+      <Route path="/Devis/Liste" element={(<Ldevis/>)} ></Route>
+      <Route path="/Prestations/Liste" element={(<Lprestations/>)} ></Route>
+      <Route path="/Notats/Liste" element={(<Lnotats/>)} ></Route>
       <Route path="/" element={(<Login />)} ></Route>
 
     </Routes >
