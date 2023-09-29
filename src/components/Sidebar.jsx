@@ -8,9 +8,9 @@ import img1 from '../img/logo2.png';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    PieChartOutlined,
+    FormOutlined,
     SettingOutlined,
-    LogoutOutlined
+    LogoutOutlined,FileSyncOutlined,ProfileOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
@@ -64,9 +64,9 @@ const Sidebar = () => {
     const items = [
       
        
-        getItem('Les devis', '/Devis/Liste', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/Devis/Liste') }),
-        getItem('Les prestations', '/Prestations/Liste', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/Prestations/Liste') }),
-        getItem('Les notats', '/Notats/Liste', 'my-3', <PieChartOutlined className='fs-5 pe-2' />, () => { navigate('/Notats/Liste') }),
+        getItem('Les devis', '/Devis/Liste', 'my-3', <FormOutlined  className='fs-5 pe-2' />, () => { navigate('/Devis/Liste') }),
+        getItem('Les prestations', '/Prestations/Liste', 'my-3', <FileSyncOutlined className='fs-5 pe-2' />, () => { navigate('/Prestations/Liste') }),
+        getItem('Les notats', '/Notats/Liste', 'my-3', <ProfileOutlined className='fs-5 pe-2' />, () => { navigate('/Notats/Liste') }),
 
         getItem('Configuration du compte', '/settings', 'my-3', <SettingOutlined className='fs-5 pe-2' />, () => { navigate('/settings') }),
 

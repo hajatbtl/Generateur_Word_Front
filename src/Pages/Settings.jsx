@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SettingOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Steps } from 'antd';
+import { Layout, Avatar, Menu, theme, Dropdown, Steps, Modal, message } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -56,7 +56,6 @@ const Settings = () => {
 
     const updatemdp = (e) => {
 
-        
         e.preventDefault()
         if (formValue.ancienmdp == formValue.mdp) {
 
@@ -71,10 +70,13 @@ const Settings = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-
+                    message.success("Votre mot de passe a ete changé avec success")
+                    setFormValue({
+                        ancienmdp: '',
+                        mdp: '',})
                 });
         } else {
-            console.log('erreur');
+            message.error("Les deux mot de passe ne sont pas identiques")
         }
 
 
@@ -132,8 +134,8 @@ const Settings = () => {
                             <hr></hr>
                             <form className='mt-3' onSubmit={(e) => updatemdp(e)}>
 
-                                <MDBInput className='mb-4' id='validationCustom01' type='password' onChange={onChange} value={formValue.ancienmdp} name='ancienmdp' placeholder='Mot de passe' />
-                                <MDBInput className='mb-4' id='validationCustom02' type='password' onChange={onChange} name='mdp' value={formValue.mdp} placeholder='Confirmer le mot de passe' />
+                                <MDBInput required minLength={8} className='mb-4' id='validationCustom01' type='password' onChange={onChange} value={formValue.ancienmdp} name='ancienmdp' placeholder='Mot de passe' />
+                                <MDBInput required minLength={8} className='mb-4' id='validationCustom02' type='password' onChange={onChange} name='mdp' value={formValue.mdp} placeholder='Confirmer le mot de passe' />
 
 
 

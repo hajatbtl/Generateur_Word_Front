@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, CheckCircleOutlined, CloseOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import {  LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, CheckCircleOutlined, CloseOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal, Input, Slider, notification, InputNumber } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -208,6 +208,7 @@ const Devis = () => {
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
         texte_prerequis: '',
+        objet_mission:'',
         texte_visite: '',
         texte_missiondce: '',
         texte_preavis: '',
@@ -294,6 +295,7 @@ const Devis = () => {
                             mail_inter: data.devis.mail_inter,
                             tel_inter: data.devis.tel_inter,
                             texte_prerequis: data.devis.prerequis,
+                            objet_mission: data.devis.objet_mission,
                             texte_visite: data.devis.visite,
                             texte_preavis: data.devis.preavis,
                             texte_missiondce: data.devis.mission_dec,
@@ -367,6 +369,7 @@ const Devis = () => {
                 mail_inter: formValue.mail_inter,
                 tel_inter: formValue.tel_inter,
                 prerequis: formValue.texte_prerequis,
+                objet_mission: formValue.objet_mission,
                 visite: formValue.texte_visite,
                 mission_dec: formValue.texte_missiondce,
                 preavis: formValue.texte_preavis,
@@ -702,6 +705,7 @@ const Devis = () => {
                 tel_inter: formValue.tel_inter,
                 mail_inter: formValue.mail_inter,
                 prerequis: formValue.texte_prerequis,
+                objet_mission: formValue.objet_mission,
                 visite: formValue.texte_visite,
                 mission_dec: formValue.texte_missiondce,
                 preavis: formValue.texte_preavis,
@@ -823,7 +827,7 @@ const Devis = () => {
             <Layout className="site-layout " style={{ backgroundColor: '#001529' }}>
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
-                        <SettingOutlined className='fs-3 pe-4' />
+                        <FormOutlined className='fs-3 pe-4' />
                         Crée un devis
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>
@@ -1165,6 +1169,22 @@ const Devis = () => {
                                         <TextArea
                                             value={formValue.texte_prerequis}
                                             name='texte_prerequis'
+                                            onChange={onChange}
+                                            id='validationCustom15'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <label>Objet de mission </label> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.objet_mission}
+                                            name='objet_mission'
                                             onChange={onChange}
                                             id='validationCustom15'
                                             required

@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
+import { FileSyncOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input,Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
@@ -255,7 +255,7 @@ const Lprestations = () => {
             <Layout className="site-layout " style={{ backgroundColor: '#001529' }}>
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
-                        <SettingOutlined className='fs-3 pe-4' />
+                        <FileSyncOutlined className='fs-3 pe-4' />
                         Les préstations
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect,useRef } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useRef } from 'react';
+import { UpCircleOutlined,ProfileOutlined,DownCircleOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input, Modal } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import Highlighter from 'react-highlight-words';
@@ -177,6 +177,27 @@ const Lnotats = () => {
         getNotats()
 
     }, [])
+    const TextColumn = ({ text }) => {
+        const [expanded, setExpanded] = useState(false);
+
+        const displayText =
+            expanded || text.length <= 50 ? text : text.slice(0, 50) + '...';
+
+        return (
+            <div>
+            {displayText}
+            <br />
+            {text.length > 50 && (
+              <span
+                onClick={() => setExpanded(!expanded)}
+                style={{ color: 'blue', cursor: 'pointer' }}
+              >
+                 {expanded ? <UpCircleOutlined /> : <DownCircleOutlined />}
+              </span>
+            )}
+          </div>
+        );
+    };
 
     const columns1 = [
 
@@ -191,6 +212,8 @@ const Lnotats = () => {
             dataIndex: 'texte_n',
             key: 'texte_n',
             ...getColumnSearchProps('texte_n'),
+            render: (text, record) => <TextColumn text={text} />,
+
         },
 
         {
@@ -242,7 +265,7 @@ const Lnotats = () => {
             <Layout className="site-layout " style={{ backgroundColor: '#001529' }}>
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
-                        <SettingOutlined className='fs-3 pe-4' />
+                        <ProfileOutlined className='fs-3 pe-4' />
                         Les notats
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>
@@ -297,7 +320,7 @@ const Lnotats = () => {
                     </Row>
 
                     <Row className='justify-content-center align-items-center'>
-                        <Table scroll={{ x: '100%' }} className='mt-5' columns={columns1} dataSource={data} />
+                        <Table className='mt-5' columns={columns1} dataSource={data} />
                     </Row>
                 </Content>
 

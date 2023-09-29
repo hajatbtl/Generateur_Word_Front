@@ -1,6 +1,6 @@
-import React, { useState, useEffect ,useRef} from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined, DeleteOutlined,SearchOutlined  } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Modal,Input } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { FormOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Modal, Input } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 import Highlighter from 'react-highlight-words';
@@ -34,111 +34,111 @@ function loadFile(url, callback) {
 
 const Ldevis = () => {
     const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-  const searchInput = useRef(null);
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText('');
-  };
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div
-        style={{
-          padding: 8,
-        }}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{
-            marginBottom: 8,
-            display: 'block',
-          }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? '#1677ff' : undefined,
-        }}
-      />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{
-            backgroundColor: '#ffc069',
-            padding: 0,
-          }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
     const [modal] = Modal.useModal();
 
     var ImageModule = require('docxtemplater-image-module-free');
@@ -183,6 +183,15 @@ const Ldevis = () => {
         prénomi: Cookies.get("prenom") || '',
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
+        texte_prerequis: '',
+        objet_mission:'',
+        texte_visite: '',
+        texte_missiondce: '',
+        texte_preavis: '',
+        accompte: '',
+
+
+
         nom: '',
         prenom: '',
         mission: '',
@@ -267,7 +276,7 @@ const Ldevis = () => {
             key: 'date',
             render: (date) => <a>{dayjs(date).format('DD-MM-YYYY')}</a>,
             ...getColumnSearchProps('date'),
-            
+
         },
         {
             title: 'Interlocuteur',
@@ -366,6 +375,12 @@ const Ldevis = () => {
                         tel_inter: data.devis.tel_inter,
                         prestationslist: data.prestation,
                         notatslist: data.notats,
+                        texte_prerequis: data.devis.prerequis,
+                        objet_mission: data.devis.objet_mission,
+                        texte_visite: data.devis.visite,
+                        texte_missiondce: data.devis.mission_dce,
+                        texte_preavis: data.devis.preavis,
+                        accompte: data.devis.accompte,
                     });
                     generateDevis({
                         ...formValue,
@@ -391,6 +406,13 @@ const Ldevis = () => {
                         tel_inter: data.devis.tel_inter,
                         prestationslist: data.prestation,
                         notatslist: data.notats,
+                        texte_prerequis: data.devis.prerequis,
+                        objet_mission: data.devis.objet_mission,
+                        texte_visite: data.devis.visite,
+                        texte_missiondce: data.devis.mission_dce,
+                        texte_preavis: data.devis.preavis,
+                        accompte: data.devis.accompte,
+
                     });
                 }
             })
@@ -460,7 +482,7 @@ const Ldevis = () => {
             <Layout className="site-layout " style={{ backgroundColor: '#001529' }}>
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
-                        <SettingOutlined className='fs-3 pe-4' />
+                        <FormOutlined className='fs-3 pe-4' />
                         Les devis
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>
@@ -495,10 +517,10 @@ const Ldevis = () => {
 
                     }}
                 ><Row>
-                        <div className='d-flex justify-content-between align-items-center'>
+                        <div className='d-flex  justify-content-between align-items-center'>
                             <div >
                                 <Link to="/devis">
-                                    <Button  ><PlusOutlined />Nouveau devis</Button>
+                                    <Button  ><PlusOutlined className='mx-2 ' />Nouveau devis</Button>
                                 </Link>
                             </div>
 

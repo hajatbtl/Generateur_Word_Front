@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, UserOutlined, LogoutOutlined,CloseOutlined,CheckCircleOutlined } from '@ant-design/icons';
+import { FileSyncOutlined, UserOutlined, LogoutOutlined,CloseOutlined,CheckCircleOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input,notification } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -188,8 +188,8 @@ const Prestation = () => {
             <Layout className="site-layout " style={{ backgroundColor: '#001529' }}>
                 <Header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 100 }}>
                     <span style={{ fontSize: '17px', color: 'white' }}>
-                        <SettingOutlined className='fs-3 pe-4' />
-                        Configuration du compte
+                        <FileSyncOutlined className='fs-3 pe-4' />
+                        Les prestations
                     </span>
                     <div className='d-flex justify-content-betwen align-items-baseline gap-3'>
                         <p style={{ color: '#ffff' }}>{Cookies.get('nom') + ' ' + Cookies.get('prenom')}</p>
