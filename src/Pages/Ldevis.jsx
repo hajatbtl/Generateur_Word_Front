@@ -184,7 +184,7 @@ const Ldevis = () => {
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
         texte_prerequis: '',
-        objet_mission:'',
+        objet_mission: '',
         texte_visite: '',
         texte_missiondce: '',
         texte_preavis: '',
@@ -378,10 +378,22 @@ const Ldevis = () => {
                         texte_prerequis: data.devis.prerequis,
                         objet_mission: data.devis.objet_mission,
                         texte_visite: data.devis.visite,
-                        texte_missiondce: data.devis.mission_dce,
+                        texte_missiondce: data.devis.mission_dec,
                         texte_preavis: data.devis.preavis,
                         accompte: data.devis.accompte,
                     });
+
+
+                    let totalHT = 0
+                    let totalTTC = 0
+                    let tva = 0
+                    data.prestation.forEach(presta => {
+                        totalHT += presta.prix
+                    });
+                    tva = totalHT * 20 / 100
+                    totalTTC = tva + totalHT
+                    let accompteCond = formValue.accompte == 100 ? false : true
+                    
                     generateDevis({
                         ...formValue,
                         date: data.devis.date,
@@ -409,10 +421,13 @@ const Ldevis = () => {
                         texte_prerequis: data.devis.prerequis,
                         objet_mission: data.devis.objet_mission,
                         texte_visite: data.devis.visite,
-                        texte_missiondce: data.devis.mission_dce,
+                        texte_missiondce: data.devis.mission_dec,
                         texte_preavis: data.devis.preavis,
                         accompte: data.devis.accompte,
-
+                        totalHT: totalHT,
+                        totalTTC: totalTTC,
+                        tva: tva,
+                        accompteCond: accompteCond
                     });
                 }
             })

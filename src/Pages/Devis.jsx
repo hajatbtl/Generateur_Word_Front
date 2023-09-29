@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, CheckCircleOutlined, CloseOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, CheckCircleOutlined, CloseOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal, Input, Slider, notification, InputNumber } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -47,12 +47,12 @@ const Devis = () => {
     const [disabled, setDisabled] = useState(false);
     const onChangeSlider = (v) => {
         setFormValue({ ...formValue, accompte: v });
-      };
-    
-      const onChangeInput = (value) => {
+    };
+
+    const onChangeInput = (value) => {
         setFormValue({ ...formValue, accompte: value });
-      };
-      
+    };
+
 
 
     // const handleFileUpload = async (file) => {
@@ -208,7 +208,7 @@ const Devis = () => {
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
         texte_prerequis: '',
-        objet_mission:'',
+        objet_mission: '',
         texte_visite: '',
         texte_missiondce: '',
         texte_preavis: '',
@@ -495,18 +495,17 @@ const Devis = () => {
                     modules: [new ImageModule(imageOptions)],
                 });
 
-                let renderingObj = {
 
-                }
-
-                doc.renderAsync(formValue).then(function () {
-                    const out = doc.getZip().generate({
-                        type: 'blob',
-                        mimeType:
-                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                setTimeout(() => {
+                    doc.renderAsync(formValue).then(function () {
+                        const out = doc.getZip().generate({
+                            type: 'blob',
+                            mimeType:
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        });
+                        saveAs(out, "generated.docx");
                     });
-                    saveAs(out, "generated.docx");
-                });
+                },1000);
             }
         );
     };
@@ -583,6 +582,25 @@ const Devis = () => {
 
     useEffect(() => {
         console.log(formValue)
+        if(formValue.prestationslist.length>0){
+            let accompteCond = formValue.accompte == 100 ? false : true
+            let totalHT = 0
+            let totalTTC = 0
+            let tva = 0
+            formValue?.prestationslist.forEach(presta => {
+                totalHT += presta.prix
+            });
+            tva = totalHT * 20 / 100
+            totalTTC = tva + totalHT
+
+            setFormValue({
+                ...formValue,
+                totalHT: totalHT,
+                totalTTC: totalTTC,
+                tva: tva,
+                accompteCond: accompteCond
+            })
+        }
     }, [formValue])
 
     const devisWithPrestation = (id) => {
@@ -1247,23 +1265,23 @@ const Devis = () => {
                                     <Col xl={6}> <label>Accompte</label> </Col>
 
                                     <Col xl={6}>
-                                            <Slider
-                                                onChange={onChangeSlider}
-                                                value={formValue.accompte}
-                                                step={5}
-                                                defaultValue={formValue.accompte}
-                                            />
-                                        </Col>
-                                        <Col span={4}>
-                                            <InputNumber
-                                                min={0}
-                                                max={1}
-                                                style={{ margin: '0 16px' }}
-                                                step={5}
-                                                value={formValue.accompte}
-                                                onChange={onChangeInput}
-                                            />
-                                        </Col>
+                                        <Slider
+                                            onChange={onChangeSlider}
+                                            value={formValue.accompte}
+                                            step={5}
+                                            defaultValue={formValue.accompte}
+                                        />
+                                    </Col>
+                                    <Col span={4}>
+                                        <InputNumber
+                                            min={0}
+                                            max={1}
+                                            style={{ margin: '0 16px' }}
+                                            step={5}
+                                            value={formValue.accompte}
+                                            onChange={onChangeInput}
+                                        />
+                                    </Col>
                                 </MDBValidationItem>
 
 
