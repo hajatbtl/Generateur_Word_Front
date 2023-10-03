@@ -189,6 +189,9 @@ const Ldevis = () => {
         texte_missiondce: '',
         texte_preavis: '',
         accompte: '',
+        notation:'',
+        has_visite:'',
+        has_prevue:'',
 
 
 
@@ -274,9 +277,11 @@ const Ldevis = () => {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
-            render: (date) => <a>{dayjs(date).format('DD-MM-YYYY')}</a>,
             ...getColumnSearchProps('date'),
 
+            render: (date) => (
+                <span>{dayjs(date).format('DD-MM-YYYY')}</span>
+              ),
         },
         {
             title: 'Interlocuteur',
@@ -377,6 +382,9 @@ const Ldevis = () => {
                         notatslist: data.notats,
                         texte_prerequis: data.devis.prerequis,
                         objet_mission: data.devis.objet_mission,
+                        notation: data.devis.notation,
+                        has_visite: data.devis.has_visite,
+                        has_prevue: data.devis.has_prevue,
                         texte_visite: data.devis.visite,
                         texte_missiondce: data.devis.mission_dec,
                         texte_preavis: data.devis.preavis,
@@ -396,7 +404,7 @@ const Ldevis = () => {
                     
                     generateDevis({
                         ...formValue,
-                        date: data.devis.date,
+                        date: dayjs(data.devis.date).format('DD-MM-YYYY'),
                         référence: data.devis.reference,
                         titre_d: data.devis.titre_d,
                         // nomi: data.devis.nom_inter,
@@ -420,6 +428,9 @@ const Ldevis = () => {
                         notatslist: data.notats,
                         texte_prerequis: data.devis.prerequis,
                         objet_mission: data.devis.objet_mission,
+                        notation: data.devis.notation,
+                        has_visite: data.devis.has_visite,
+                        has_prevue: data.devis.has_prevue,
                         texte_visite: data.devis.visite,
                         texte_missiondce: data.devis.mission_dec,
                         texte_preavis: data.devis.preavis,

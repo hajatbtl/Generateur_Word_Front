@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LogoutOutlined, FileDoneOutlined, CodepenOutlined, UserOutlined, BarChartOutlined, CheckCircleOutlined, CloseOutlined, UploadOutlined, FormOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Modal, Input, Slider, notification, InputNumber } from 'antd';
+import { Layout, Avatar, Menu, theme, Dropdown, Steps, Select, DatePicker, Upload, Radio, Modal, Input, Slider, notification, InputNumber } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -52,7 +52,16 @@ const Devis = () => {
     const onChangeInput = (value) => {
         setFormValue({ ...formValue, accompte: value });
     };
+    const onChangeradiovisite = (e) => {
+        console.log('radio checked', e.target.value);
+        setFormValue({...formValue, has_visite : e.target.value})
 
+    };
+    const onChangeradioprevue = (e) => {
+        console.log('radio checked', e.target.value);
+        setFormValue({...formValue, has_prevue : e.target.value})
+    };
+   
 
 
     // const handleFileUpload = async (file) => {
@@ -208,11 +217,14 @@ const Devis = () => {
         teli: Cookies.get("tel") || '',
         maili: Cookies.get("email") || '',
         texte_prerequis: '',
-        objet_mission: '',
+        objet_mission: 'Nous faisons suite à votre demande. Vous avez souhaité nous missionner ',
         texte_visite: '',
         texte_missiondce: '',
         texte_preavis: '',
         accompte: '',
+        notation:'',
+        has_visite:'',
+        has_prevue:'',
 
 
 
@@ -296,6 +308,9 @@ const Devis = () => {
                             tel_inter: data.devis.tel_inter,
                             texte_prerequis: data.devis.prerequis,
                             objet_mission: data.devis.objet_mission,
+                            notation:data.devis.notation,
+                            has_visite:data.devis.has_visite,
+                            has_prevue:data.devis.has_prevue,
                             texte_visite: data.devis.visite,
                             texte_preavis: data.devis.preavis,
                             texte_missiondce: data.devis.mission_dec,
@@ -361,7 +376,7 @@ const Devis = () => {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                date: dayjs(formValue.date).format('YYYY-MM-DD HH:mm:ss'),
+                date: dayjs(formValue.date).format('DD-MM-YYYY'),
                 titre_d: formValue.titre_d,
                 reference: formValue.référence,
                 nom_inter: formValue.nom_inter,
@@ -370,6 +385,9 @@ const Devis = () => {
                 tel_inter: formValue.tel_inter,
                 prerequis: formValue.texte_prerequis,
                 objet_mission: formValue.objet_mission,
+                notation:formValue.notation,
+                has_visite:formValue.has_visite,
+                has_prevue:formValue.has_prevue,
                 visite: formValue.texte_visite,
                 mission_dec: formValue.texte_missiondce,
                 preavis: formValue.texte_preavis,
@@ -505,7 +523,7 @@ const Devis = () => {
                         });
                         saveAs(out, "generated.docx");
                     });
-                },1000);
+                }, 1000);
             }
         );
     };
@@ -582,7 +600,7 @@ const Devis = () => {
 
     useEffect(() => {
         console.log(formValue)
-        if(formValue.prestationslist.length>0){
+        if (formValue.prestationslist.length > 0) {
             let accompteCond = formValue.accompte == 100 ? false : true
             let totalHT = 0
             let totalTTC = 0
@@ -716,7 +734,7 @@ const Devis = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 reference: formValue.référence,
-                date: formValue.date,
+                date: dayjs(formValue.date).format('YYYY-MM-DD'),
                 titre_d: formValue.titre_d,
                 nom_inter: formValue.nom_inter,
                 prenom_inter: formValue.prenom_inter,
@@ -724,6 +742,9 @@ const Devis = () => {
                 mail_inter: formValue.mail_inter,
                 prerequis: formValue.texte_prerequis,
                 objet_mission: formValue.objet_mission,
+                notation:formValue.notation,
+                has_visite:formValue.has_visite,
+                has_prevue:formValue.has_prevue,
                 visite: formValue.texte_visite,
                 mission_dec: formValue.texte_missiondce,
                 preavis: formValue.texte_preavis,
@@ -833,7 +854,7 @@ const Devis = () => {
 
 
     const handleDateChange = (selectedDate) => {
-        const formattedDate = dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+        const formattedDate = dayjs(selectedDate).format("DD-MM-YYYY");
         setFormValue({ ...formValue, date: formattedDate });
     };
 
@@ -890,15 +911,15 @@ const Devis = () => {
 
                             },
                             {
-                                title: 'Information',
+                                title: 'Information de devis',
 
                             },
-                            {
-                                title: 'Prestation',
-                            },
-                            {
-                                title: 'Notats',
-                            },
+                            // {
+                            //     title: 'Délais d\'intervention',
+                            // },
+                            // {
+                            //     title: 'Notats',
+                            // },
                             {
                                 title: 'Telecharger fichier Word',
                             },
@@ -924,7 +945,7 @@ const Devis = () => {
                                     <MDBValidationItem feedback='Merci de remplire la date.' invalid>
                                         <Col xl={6}> <label>Date de devis</label> </Col>
                                         {/* <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format() }) }} /> */}
-                                        <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} />
+                                        <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} format={'DD-MM-YYYY'} />
 
                                     </MDBValidationItem>
                                     <MDBValidationItem className='col-md-6' feedback="Merci de remplire le nom de l'nterlocuteur ." invalid>
@@ -1168,7 +1189,7 @@ const Devis = () => {
                         <Row className='mt-5'>
                             <div className='d-flex align-items-center gap-4'>
                                 <CodepenOutlined className='fs-1' />
-                                <h4>Information</h4>
+                                <h4>Information de devis</h4>
                             </div>
                         </Row>
                         <Row>
@@ -1179,24 +1200,9 @@ const Devis = () => {
                                 }
                             }} className='row g-3'>
 
+
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-                                    <Col xl={6}> <label>Prérequis</label> </Col>
-
-                                    <Col xl={6}>
-
-                                        <TextArea
-                                            value={formValue.texte_prerequis}
-                                            name='texte_prerequis'
-                                            onChange={onChange}
-                                            id='validationCustom15'
-                                            required
-                                        />
-
-                                    </Col>
-
-                                </MDBValidationItem>
-                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-                                    <Col xl={6}> <label>Objet de mission </label> </Col>
+                                    <Col xl={6}> <h6>Objet de mission </h6> </Col>
 
                                     <Col xl={6}>
 
@@ -1211,7 +1217,36 @@ const Devis = () => {
                                     </Col>
 
                                 </MDBValidationItem>
-                                <h2>Délais d'intervention</h2>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <h6>Données d'entrée & Pré-requis</h6> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.texte_prerequis}
+                                            name='texte_prerequis'
+                                            onChange={onChange}
+                                            id='validationCustom15'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+
+
+
+                                <MDBValidationItem feedback='Merci de remplire La Mission.' invalid>
+                                    <Col xl={6}> <h6>Prestation</h6> </Col>
+                                    <Col xl={6}> <Select
+                                        mode="multiple"
+                                        value={selectPrestationsOption}
+                                        style={{ width: 200 }}
+                                        onChange={handleChange}
+                                        options={prestations}
+                                    /></Col>
+                                </MDBValidationItem>
+                                <h6>Délais d'intervention</h6>
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
                                     <Col xl={6}> <label>Visite</label> </Col>
 
@@ -1229,7 +1264,7 @@ const Devis = () => {
 
                                 </MDBValidationItem>
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-                                    <Col xl={6}> <label>Mission DCE</label> </Col>
+                                    <Col xl={6}> <label>Mission </label> </Col>
 
                                     <Col xl={6}>
 
@@ -1244,7 +1279,52 @@ const Devis = () => {
                                     </Col>
 
                                 </MDBValidationItem>
+                                
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
+                                <Col xl={6}> <label>Condition d'execution </label> </Col>
+
+                                    <Col xl={6} className='mt-3'>
+                                        <Radio.Group onChange={onChangeradiovisite} value={formValue.has_visite}>
+                                            <Radio value={'avec une visite préalable'}>Avec une visite préalable</Radio>
+                                            <Radio value={'sans une visite préalable'}>Sans une visite préalable</Radio>
+                                        </Radio.Group>
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                    <Col xl={6}> <label>Notation (Facultative) </label> </Col>
+
+                                    <Col xl={6}>
+
+                                        <TextArea
+                                            value={formValue.notation}
+                                            name='notation'
+                                            onChange={onChange}
+                                            id='validationCustom17'
+                                            required
+                                        />
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <h6>Précisions & Exclusion</h6>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
+
+
+                                    <Col xl={6}>
+                                        <Radio.Group onChange={onChangeradioprevue} value={formValue.has_prevue}>
+                                            <Radio value={'N\'est pas prévue dans notre offre'}>N'est pas prévue dans notre offre</Radio>
+                                            <Radio value={'C\'est prévue dans notre offre'}>C'est prévue dans notre offre</Radio>
+                                        </Radio.Group>
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
                                     <Col xl={6}> <label>Préavis</label> </Col>
 
                                     <Col xl={6}>
@@ -1286,6 +1366,8 @@ const Devis = () => {
 
 
 
+
+
                                 <div className='d-flex gap-2'>
                                     <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
 
@@ -1298,12 +1380,12 @@ const Devis = () => {
                             </MDBValidation>
                         </Row>
                     </>}
-                    {currentStep === 4 &&
+                    {/* {currentStep === 4 &&
                         <>
                             <Row className='mt-5'>
                                 <div className='d-flex align-items-center gap-4'>
                                     <BarChartOutlined className='fs-1' />
-                                    <h4>Prestation</h4>
+                                    <h4>Délais d'intervention</h4>
                                 </div>
                             </Row>
                             <Row>
@@ -1315,15 +1397,85 @@ const Devis = () => {
                                 }} className='row g-3'>
 
 
-                                    <MDBValidationItem className='col-md-6' feedback='Merci de remplire La Mission.' invalid>
-                                        <Select
-                                            mode="multiple"
-                                            value={selectPrestationsOption}
-                                            style={{ width: 200 }}
-                                            onChange={handleChange}
-                                            options={prestations}
-                                        />
+                                    <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                        <Col xl={6}> <label>Visite</label> </Col>
+
+                                        <Col xl={6}>
+
+                                            <TextArea
+                                                value={formValue.texte_visite}
+                                                name='texte_visite'
+                                                onChange={onChange}
+                                                id='validationCustom16'
+                                                required
+                                            />
+
+                                        </Col>
+
                                     </MDBValidationItem>
+                                    <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                        <Col xl={6}> <label>Mission </label> </Col>
+
+                                        <Col xl={6}>
+
+                                            <TextArea
+                                                value={formValue.texte_missiondce}
+                                                name='texte_missiondce'
+                                                onChange={onChange}
+                                                id='validationCustom17'
+                                                required
+                                            />
+
+                                        </Col>
+
+                                    </MDBValidationItem>
+                                    <h6>Condition d'execution</h6>
+                                    <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
+
+
+                                        <Col xl={6}>
+                                            <Radio.Group onChange={onChangeradiovisite} value={valuevisite}>
+                                                <Radio value={1}>Avec une visite préavis</Radio>
+                                                <Radio value={2}>Sans une visite préavis</Radio>
+                                            </Radio.Group>
+
+                                        </Col>
+
+                                    </MDBValidationItem>
+                                    <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+                                        <Col xl={6}> <label>Notation (Facultative) </label> </Col>
+
+                                        <Col xl={6}>
+
+                                            <TextArea
+                                                value={formValue.texte_notation}
+                                                name='texte_notation'
+                                                onChange={onChange}
+                                                id='validationCustom17'
+                                                required
+                                            />
+
+                                        </Col>
+
+                                    </MDBValidationItem>
+                                    <h6>Précisions & Exclusion</h6>
+                                    <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
+
+
+                                        <Col xl={6}>
+                                            <Radio.Group onChange={onChangeradioprevue} value={valueprevue}>
+                                                <Radio value={1}>N'est pas prévue dans notre offre</Radio>
+                                                <Radio value={2}>C'est prévue dans notre offre</Radio>
+                                            </Radio.Group>
+
+                                        </Col>
+
+                                    </MDBValidationItem>
+
+
+
 
 
                                     <div className='d-flex gap-2'>
@@ -1377,10 +1529,49 @@ const Devis = () => {
                             </Row>
 
                         </>
-                    }
+                    } */}
+                    {/* {currentStep === 5 &&
+                        <>
+                            <Row className='mt-5'>
+                                <div className='d-flex align-items-center gap-4'>
+                                    <BarChartOutlined className='fs-1' />
+                                    <h4>Notats</h4>
+                                </div>
+                            </Row>
+                            <Row>
+                                <MDBValidation onSubmit={(e) => {
+                                    let form = document.querySelector('.needs-validation')
+                                    if (form.checkValidity()) {
+                                        next()
+                                    }
+                                }} className='row g-3'>
 
 
-                    {currentStep === 6 &&
+                                    <MDBValidationItem className='col-md-6' feedback='Merci de remplire La Notats.' invalid>
+                                        <Select
+                                            mode="multiple"
+                                            value={selectNotatsOption}
+                                            style={{ width: 200 }}
+                                            onChange={handleChangenotats}
+                                            options={notats}
+                                        />
+                                    </MDBValidationItem>
+
+
+                                    <div className='d-flex gap-2'>
+                                        <Button onClick={() => setCurrentStep(currentStep - 1)}>Précedent</Button>
+
+                                        <Button type='submit'>Suivant</Button>
+                                    </div>
+
+                                </MDBValidation>
+                            </Row>
+
+                        </>
+                    } */}
+
+
+                    {currentStep === 4 &&
                         <>
                             <Row className='mt-5'>
                                 <div className='d-flex align-items-center gap-4'>

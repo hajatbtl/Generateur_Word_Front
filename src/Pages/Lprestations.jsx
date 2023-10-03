@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { FileSyncOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
+import { UpCircleOutlined,DownCircleOutlined,FileSyncOutlined, UserOutlined, LogoutOutlined, PlusOutlined, DeleteOutlined, EditOutlined,SearchOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Input,Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
@@ -179,6 +179,27 @@ const Lprestations = () => {
         getPrestation()
 
     }, [])
+    const TextColumn = ({ text }) => {
+        const [expanded, setExpanded] = useState(false);
+
+        const displayText =
+            expanded || text.length <= 50 ? text : text.slice(0, 50) + '...';
+
+        return (
+            <div>
+            {displayText}
+            <br />
+            {text.length > 50 && (
+              <span
+                onClick={() => setExpanded(!expanded)}
+                style={{ color: 'blue', cursor: 'pointer' }}
+              >
+                 {expanded ? <UpCircleOutlined /> : <DownCircleOutlined />}
+              </span>
+            )}
+          </div>
+        );
+    };
 
     const columns1 = [
         {
@@ -192,6 +213,7 @@ const Lprestations = () => {
             dataIndex: 'texte',
             key: 'texte',
             ...getColumnSearchProps('texte'),
+            render: (text, record) => <TextColumn text={text} />,
         },
         {
             title: 'Prix',
