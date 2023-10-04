@@ -2,9 +2,9 @@
 import './App.css';
 
 import React, { useState, useEffect } from 'react';
-import { CalendarOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Layout, Input, theme, Radio, Modal, DatePicker, Result, Calendar } from 'antd';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+
+import { ConfigProvider } from 'antd';
+import frFR from 'antd/locale/fr_FR';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -22,6 +22,8 @@ import Lnotats from './Pages/Lnotats';
 
 function App() {
   return (
+    <ConfigProvider locale={frFR}>
+
     <BrowserRouter>
     <Routes>
 
@@ -36,6 +38,7 @@ function App() {
 
     </Routes >
   </BrowserRouter >
+  </ConfigProvider>
   );
 }
 

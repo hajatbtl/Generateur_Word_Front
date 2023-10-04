@@ -23,7 +23,7 @@ import axios from 'axios';
 
 
 var ImageModule = require('docxtemplater-image-module-free');
-
+dayjs.locale('fr');
 
 const { Header } = Layout;
 const UserList = ['U', 'Lucy', 'Tom', 'Edward'];
@@ -40,6 +40,7 @@ function loadFile(url, callback) {
 const Devis = () => {
 
     const [file, setFile] = useState(null);
+    const [date, setDate] = useState(null);
     const [fileName, setFileName] = useState('');
     const [imageDataUrl, setImageDataUrl] = useState(null);
     const [selectPrestationsOption, setSelectPrestationsOption] = useState([]);
@@ -54,14 +55,14 @@ const Devis = () => {
     };
     const onChangeradiovisite = (e) => {
         console.log('radio checked', e.target.value);
-        setFormValue({...formValue, has_visite : e.target.value})
+        setFormValue({ ...formValue, has_visite: e.target.value })
 
     };
     const onChangeradioprevue = (e) => {
         console.log('radio checked', e.target.value);
-        setFormValue({...formValue, has_prevue : e.target.value})
+        setFormValue({ ...formValue, has_prevue: e.target.value })
     };
-   
+
 
 
     // const handleFileUpload = async (file) => {
@@ -222,9 +223,9 @@ const Devis = () => {
         texte_missiondce: '',
         texte_preavis: '',
         accompte: '',
-        notation:'',
-        has_visite:'',
-        has_prevue:'',
+        notation: '',
+        has_visite: '',
+        has_prevue: '',
 
 
 
@@ -308,9 +309,9 @@ const Devis = () => {
                             tel_inter: data.devis.tel_inter,
                             texte_prerequis: data.devis.prerequis,
                             objet_mission: data.devis.objet_mission,
-                            notation:data.devis.notation,
-                            has_visite:data.devis.has_visite,
-                            has_prevue:data.devis.has_prevue,
+                            notation: data.devis.notation,
+                            has_visite: data.devis.has_visite,
+                            has_prevue: data.devis.has_prevue,
                             texte_visite: data.devis.visite,
                             texte_preavis: data.devis.preavis,
                             texte_missiondce: data.devis.mission_dec,
@@ -320,7 +321,7 @@ const Devis = () => {
 
 
 
-
+                        setDate(dayjs(data.devis.date))
 
                         // const formattedData = data.prestation.map(item => {
                         //     return {
@@ -385,9 +386,9 @@ const Devis = () => {
                 tel_inter: formValue.tel_inter,
                 prerequis: formValue.texte_prerequis,
                 objet_mission: formValue.objet_mission,
-                notation:formValue.notation,
-                has_visite:formValue.has_visite,
-                has_prevue:formValue.has_prevue,
+                notation: formValue.notation,
+                has_visite: formValue.has_visite,
+                has_prevue: formValue.has_prevue,
                 visite: formValue.texte_visite,
                 mission_dec: formValue.texte_missiondce,
                 preavis: formValue.texte_preavis,
@@ -734,7 +735,7 @@ const Devis = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 reference: formValue.référence,
-                date: dayjs(formValue.date).format('YYYY-MM-DD'),
+                date: dayjs(formValue.date).format('DD-MM-YYYY'),
                 titre_d: formValue.titre_d,
                 nom_inter: formValue.nom_inter,
                 prenom_inter: formValue.prenom_inter,
@@ -742,9 +743,9 @@ const Devis = () => {
                 mail_inter: formValue.mail_inter,
                 prerequis: formValue.texte_prerequis,
                 objet_mission: formValue.objet_mission,
-                notation:formValue.notation,
-                has_visite:formValue.has_visite,
-                has_prevue:formValue.has_prevue,
+                notation: formValue.notation,
+                has_visite: formValue.has_visite,
+                has_prevue: formValue.has_prevue,
                 visite: formValue.texte_visite,
                 mission_dec: formValue.texte_missiondce,
                 preavis: formValue.texte_preavis,
@@ -854,8 +855,10 @@ const Devis = () => {
 
 
     const handleDateChange = (selectedDate) => {
-        const formattedDate = dayjs(selectedDate).format("DD-MM-YYYY");
+        const formattedDate = dayjs(selectedDate).format('DD-MM-YYYY');
         setFormValue({ ...formValue, date: formattedDate });
+
+        setDate(dayjs(selectedDate))
     };
 
 
@@ -945,7 +948,7 @@ const Devis = () => {
                                     <MDBValidationItem feedback='Merci de remplire la date.' invalid>
                                         <Col xl={6}> <label>Date de devis</label> </Col>
                                         {/* <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format() }) }} /> */}
-                                        <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} format={'DD-MM-YYYY'} />
+                                        <DatePicker value={date} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} format={'DD-MM-YYYY'}/>
 
                                     </MDBValidationItem>
                                     <MDBValidationItem className='col-md-6' feedback="Merci de remplire le nom de l'nterlocuteur ." invalid>
@@ -1281,50 +1284,7 @@ const Devis = () => {
                                 </MDBValidationItem>
                                 
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-
-                                <Col xl={6}> <label>Condition d'execution </label> </Col>
-
-                                    <Col xl={6} className='mt-3'>
-                                        <Radio.Group onChange={onChangeradiovisite} value={formValue.has_visite}>
-                                            <Radio value={'avec une visite préalable'}>Avec une visite préalable</Radio>
-                                            <Radio value={'sans une visite préalable'}>Sans une visite préalable</Radio>
-                                        </Radio.Group>
-
-                                    </Col>
-
-                                </MDBValidationItem>
-                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-                                    <Col xl={6}> <label>Notation (Facultative) </label> </Col>
-
-                                    <Col xl={6}>
-
-                                        <TextArea
-                                            value={formValue.notation}
-                                            name='notation'
-                                            onChange={onChange}
-                                            id='validationCustom17'
-                                            required
-                                        />
-
-                                    </Col>
-
-                                </MDBValidationItem>
-                                <h6>Précisions & Exclusion</h6>
-                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-
-
-
-                                    <Col xl={6}>
-                                        <Radio.Group onChange={onChangeradioprevue} value={formValue.has_prevue}>
-                                            <Radio value={'N\'est pas prévue dans notre offre'}>N'est pas prévue dans notre offre</Radio>
-                                            <Radio value={'C\'est prévue dans notre offre'}>C'est prévue dans notre offre</Radio>
-                                        </Radio.Group>
-
-                                    </Col>
-
-                                </MDBValidationItem>
-                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-
+                                <label className='mb-3'>Condition d'execution</label>
                                     <Col xl={6}> <label>Préavis</label> </Col>
 
                                     <Col xl={6}>
@@ -1340,6 +1300,49 @@ const Devis = () => {
                                     </Col>
 
                                 </MDBValidationItem>
+
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
+                                    <Col xl={6}> <label>Condition d'execution </label> </Col>
+
+                                    <Col xl={6} className='mt-3'>
+                                        <Radio.Group onChange={onChangeradiovisite} value={formValue.has_visite}>
+                                            <Radio value={'avec une visite préalable'}>Avec une visite préalable</Radio>
+                                            <Radio value={'sans une visite préalable'}>Sans une visite préalable</Radio>
+                                        </Radio.Group>
+
+                                    </Col>
+
+                                </MDBValidationItem>
+                                
+                                    <Col xl={6}> <label>Texte libre  </label> </Col>
+
+                                    <Col xl={12}>
+
+                                        <TextArea
+                                            value={formValue.notation}
+                                            name='notation'
+                                            onChange={onChange}
+                                        />
+
+                                    </Col>
+
+                                
+                                <h6>Précisions & Exclusion</h6>
+                                <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
+
+
+
+                                    <Col xl={6}>
+                                        <Radio.Group onChange={onChangeradioprevue} value={formValue.has_prevue}>
+                                            <Radio value={'N\'est pas prévue dans notre offre'}>N'est pas prévue dans notre offre</Radio>
+                                            <Radio value={'C\'est prévue dans notre offre'}>C'est prévue dans notre offre</Radio>
+                                        </Radio.Group>
+
+                                    </Col>
+
+                                </MDBValidationItem>
+
                                 <MDBValidationItem feedback='Merci de choisir Accompte.' invalid>
 
                                     <Col xl={6}> <label>Accompte</label> </Col>
