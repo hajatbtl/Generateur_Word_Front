@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FileSyncOutlined, UserOutlined, LogoutOutlined,CloseOutlined,CheckCircleOutlined } from '@ant-design/icons';
-import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input,notification } from 'antd';
+import { FileSyncOutlined, UserOutlined, LogoutOutlined, CloseOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Layout, Avatar, Menu, theme, Dropdown, Modal, Input, notification } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -8,6 +8,8 @@ import { Content } from 'antd/es/layout/layout';
 import Cookies from 'js-cookie';
 import { MDBValidation, MDBValidationItem } from 'mdb-react-ui-kit';
 import { useLocation } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -26,6 +28,13 @@ const GapList = [4, 3, 2, 1];
 
 
 const Prestation = () => {
+    
+    const [content, setContent] = useState('');
+    const handleEditorChange = (value) => {
+        setFormValue({...formValue,texte:value});
+    };
+
+
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const idPres = queryParams.get('id');
@@ -94,15 +103,15 @@ const Prestation = () => {
                 .then(response => response.json())
                 .then((data) => {
                     notification.success({
-                        
-                        description:'Vous avez bien ajouté la prestation',
-                        placement:'bottomRight',
-                        icon:<CheckCircleOutlined style={{color:'#fffff'}}/>,
-                        style:{background:'#7ae700', color:'#fff'},
-                        closeIcon:<CloseOutlined style={{color:'#ffff'}} />
+
+                        description: 'Vous avez bien ajouté la prestation',
+                        placement: 'bottomRight',
+                        icon: <CheckCircleOutlined style={{ color: '#fffff' }} />,
+                        style: { background: '#7ae700', color: '#fff' },
+                        closeIcon: <CloseOutlined style={{ color: '#ffff' }} />
 
                     })
-                   
+
                     navigate('/Prestations/Liste');
                 })
                 .catch(error => {
@@ -153,15 +162,15 @@ const Prestation = () => {
                 .then(response => response.json())
                 .then((data) => {
                     notification.success({
-                        
-                        description:'Vous avez bien modifié la prestation',
-                        placement:'bottomRight',
-                        icon:<CheckCircleOutlined style={{color:'#fffff'}}/>,
-                        style:{background:'#7ae700', color:'#fff'},
-                        closeIcon:<CloseOutlined style={{color:'#ffff'}} />
+
+                        description: 'Vous avez bien modifié la prestation',
+                        placement: 'bottomRight',
+                        icon: <CheckCircleOutlined style={{ color: '#fffff' }} />,
+                        style: { background: '#7ae700', color: '#fff' },
+                        closeIcon: <CloseOutlined style={{ color: '#ffff' }} />
 
                     })
-                   
+
                     navigate('/Prestations/Liste');
                 })
                 .catch(error => {
@@ -249,7 +258,7 @@ const Prestation = () => {
                                 </MDBValidationItem>
 
 
-                                
+
                                 <MDBValidationItem feedback='Merci de remplire le prix.' invalid>
 
                                     <Col xl={6}> <label>Prix</label> </Col>
@@ -297,13 +306,15 @@ const Prestation = () => {
 
                                         /> */}
 
-                                        <TextArea
+                                        {/* <TextArea
                                             value={formValue.texte}
                                             name='texte'
                                             onChange={onChange}
                                             id='validationCustom01'
                                             required
-                                        />
+                                        /> */}
+                                        <ReactQuill   value={formValue.texte}  onChange={handleEditorChange} id='validationCustom01'
+                                            required />
 
                                     </Col>
                                 </MDBValidationItem>
@@ -342,3 +353,4 @@ const Prestation = () => {
     );
 };
 export default Prestation;
+

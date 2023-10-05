@@ -14,7 +14,8 @@ import Cookies from 'js-cookie';
 import { useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { MDBInput } from 'mdb-react-ui-kit';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import 'dayjs/locale/fr';
 import locale from 'antd/es/date-picker/locale/fr_FR';
 import axios from 'axios';
@@ -38,7 +39,7 @@ function loadFile(url, callback) {
 }
 
 const Devis = () => {
-//updaaaaaaaaaaate
+
     const [file, setFile] = useState(null);
     const [date, setDate] = useState(null);
     const [fileName, setFileName] = useState('');
@@ -321,7 +322,7 @@ const Devis = () => {
 
 
 
-                        setDate(dayjs(data.devis.date))
+                        setDate(dayjs(data.devis.date,'DD-MM-YYYY'))
 
                         // const formattedData = data.prestation.map(item => {
                         //     return {
@@ -377,7 +378,7 @@ const Devis = () => {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                date: dayjs(formValue.date).format('DD-MM-YYYY'),
+                date: formValue.date,
                 titre_d: formValue.titre_d,
                 reference: formValue.référence,
                 nom_inter: formValue.nom_inter,
@@ -522,6 +523,7 @@ const Devis = () => {
                             mimeType:
                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                         });
+
                         saveAs(out, "generated.docx");
                     });
                 }, 1000);
@@ -735,7 +737,7 @@ const Devis = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 reference: formValue.référence,
-                date: dayjs(formValue.date).format('DD-MM-YYYY'),
+                date: formValue.date,
                 titre_d: formValue.titre_d,
                 nom_inter: formValue.nom_inter,
                 prenom_inter: formValue.prenom_inter,
@@ -855,9 +857,8 @@ const Devis = () => {
 
 
     const handleDateChange = (selectedDate) => {
-        const formattedDate = dayjs(selectedDate).format('DD-MM-YYYY');
+        const formattedDate = dayjs(selectedDate).format('DD/MM/YYYY');
         setFormValue({ ...formValue, date: formattedDate });
-
         setDate(dayjs(selectedDate))
     };
 
@@ -948,8 +949,7 @@ const Devis = () => {
                                     <MDBValidationItem feedback='Merci de remplire la date.' invalid>
                                         <Col xl={6}> <label>Date de devis</label> </Col>
                                         {/* <DatePicker value={formValue.date ? dayjs(formValue.date) : null} locale={locale} className='col-6' onChange={(v) => { setFormValue({ ...formValue, date: dayjs(v).format() }) }} /> */}
-                                        <DatePicker value={date} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} format={'DD-MM-YYYY'}/>
-
+                                        <DatePicker value={date} locale={locale} className='col-6' onChange={(v) => handleDateChange(v)} format={'DD/MM/YYYY'} />
                                     </MDBValidationItem>
                                     <MDBValidationItem className='col-md-6' feedback="Merci de remplire le nom de l'nterlocuteur ." invalid>
                                         <label>Titre de Devis :</label>
@@ -1208,14 +1208,10 @@ const Devis = () => {
                                     <Col xl={6}> <h6>Objet de mission </h6> </Col>
 
                                     <Col xl={6}>
+                                        <ReactQuill value={formValue.objet_mission} onChange={(v) => setFormValue({ ...formValue, objet_mission: v })} id='validationCustom22'
+                                            required />
 
-                                        <TextArea
-                                            value={formValue.objet_mission}
-                                            name='objet_mission'
-                                            onChange={onChange}
-                                            id='validationCustom15'
-                                            required
-                                        />
+
 
                                     </Col>
 
@@ -1282,9 +1278,9 @@ const Devis = () => {
                                     </Col>
 
                                 </MDBValidationItem>
-                                
+
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
-                                <label className='mb-3'>Condition d'execution</label>
+                                    <label className='mb-3'>Condition d'execution</label>
                                     <Col xl={6}> <label>Préavis</label> </Col>
 
                                     <Col xl={6}>
@@ -1314,20 +1310,18 @@ const Devis = () => {
                                     </Col>
 
                                 </MDBValidationItem>
-                                
-                                    <Col xl={6}> <label>Texte libre  </label> </Col>
 
-                                    <Col xl={12}>
+                                <Row className='flex-direction-column mt-3 gap-3'>
+                                    <Col xl={6} > <label>Texte libre  </label> </Col>
 
-                                        <TextArea
-                                            value={formValue.notation}
-                                            name='notation'
-                                            onChange={onChange}
-                                        />
+                                    <Col xl={6}>
+                                        <ReactQuill value={formValue.notation} onChange={(v) => setFormValue({ ...formValue, notation: v })} />
+
 
                                     </Col>
+                                </Row>
 
-                                
+
                                 <h6>Précisions & Exclusion</h6>
                                 <MDBValidationItem feedback='Merci de remplire le texte.' invalid>
 

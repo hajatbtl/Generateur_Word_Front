@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FormOutlined, UserOutlined, LogoutOutlined, PlusOutlined, EditOutlined, DownloadOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import { Layout, Avatar, Menu, theme, Dropdown, Table, Space, Modal, Input } from 'antd';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-
+import xmlbuilder from 'xmlbuilder';
 import Highlighter from 'react-highlight-words';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../components/Sidebar';
@@ -10,10 +10,7 @@ import { Content } from 'antd/es/layout/layout';
 import Cookies from 'js-cookie';
 import dayjs from 'dayjs';
 import { Link, useNavigate } from 'react-router-dom';
-
-
 import Docxtemplater from 'docxtemplater';
-
 import PizZip from 'pizzip';
 
 import PizZipUtils from 'pizzip/utils/index.js';
@@ -189,9 +186,9 @@ const Ldevis = () => {
         texte_missiondce: '',
         texte_preavis: '',
         accompte: '',
-        notation:'',
-        has_visite:'',
-        has_prevue:'',
+        notation: '',
+        has_visite: '',
+        has_prevue: '',
 
 
 
@@ -278,10 +275,10 @@ const Ldevis = () => {
             dataIndex: 'date',
             key: 'date',
             ...getColumnSearchProps('date'),
+            
+            
 
-            render: (date) => (
-                <span>{dayjs(date).format('DD-MM-YYYY')}</span>
-              ),
+
         },
         {
             title: 'Interlocuteur',
@@ -346,7 +343,39 @@ const Ldevis = () => {
         }
 
     ]
+//     const convertToDocxXml = (html) => {
+//        // Create a temporary div element to parse the HTML content
+//   const tempDiv = document.createElement('div');
+//   tempDiv.innerHTML = html;
 
+//   // Initialize an empty string to store the Word XML
+//   let wordXml = '';
+
+//   // Iterate through each paragraph (p) element in the parsed HTML
+//   const paragraphs = tempDiv.querySelectorAll('p');
+//   paragraphs.forEach((paragraph) => {
+//     const strong = paragraph.querySelector('strong');
+//     const u = paragraph.querySelector('u');
+//     const text = paragraph.textContent;
+
+//     // Build the Word XML for each paragraph based on the presence of strong and u tags
+//     wordXml += '<w:p>';
+//     wordXml += '<w:r>';
+//     wordXml += '<w:rPr>';
+//     if (strong) {
+//       wordXml += '<w:b/>';
+//     }
+//     if (u) {
+//       wordXml += '<w:u w:val="single"/>';
+//     }
+//     wordXml += '</w:rPr>';
+//     wordXml += `<w:t>${text}</w:t>`;
+//     wordXml += '</w:r>';
+//     wordXml += '</w:p>';
+//   });
+
+//   return wordXml;
+//       }
     const getData = async (id, idDevis) => {
         await fetch('http://localhost:5000/api/devis/devisall/' + idDevis, {
             method: 'GET',
@@ -401,11 +430,11 @@ const Ldevis = () => {
                     tva = totalHT * 20 / 100
                     totalTTC = tva + totalHT
                     let accompteCond = formValue.accompte == 100 ? false : true
-                    
+
                     generateDevis({
                         ...formValue,
-                        date: dayjs(data.devis.date).format('DD-MM-YYYY'),
-                        référence: data.devis.reference,
+                        date: data.devis.date,
+                        référence:data.devis.reference,
                         titre_d: data.devis.titre_d,
                         // nomi: data.devis.nom_inter,
                         // prénomi: data.devis.prenom_inter,

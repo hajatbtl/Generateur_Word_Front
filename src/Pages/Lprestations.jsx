@@ -213,7 +213,7 @@ const Lprestations = () => {
             dataIndex: 'texte',
             key: 'texte',
             ...getColumnSearchProps('texte'),
-            render: (text, record) => <TextColumn text={text} />,
+            render: (text, record) =>  <div dangerouslySetInnerHTML={{ __html: text }}></div>,
         },
         {
             title: 'Prix',
